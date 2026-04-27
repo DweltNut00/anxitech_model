@@ -1,0 +1,44 @@
+======================================================================
+REPORTE DE EXPERIMENTOS - ANXITECH
+======================================================================
+
+Fecha: 2026-01-28 15:32:43
+
+EXPERIMENTO 1: VARIAR TAMAÑO DEL DATASET
+----------------------------------------------------------------------
+Tamaños probados: [150, 500, 1000]
+Configuración: 100 árboles, profundidad 10
+
+ n_alumnos  accuracy_train  accuracy_test  precision  recall  f1_score  overfitting   tiempo
+       150        0.966667           0.70   0.656000    0.70  0.651515     0.266667 0.143794
+       500        1.000000           0.98   0.980635    0.98  0.979876     0.020000 0.135757
+      1000        1.000000           1.00   1.000000    1.00  1.000000     0.000000 0.143563
+
+EXPERIMENTO 2: VARIAR NÚMERO DE ÁRBOLES
+----------------------------------------------------------------------
+Números de árboles probados: [100, 200, 500]
+Dataset usado: 1000 alumnos
+
+ n_arboles  accuracy_train  accuracy_test  precision  recall  f1_score  overfitting   tiempo
+       100             1.0            1.0        1.0     1.0       1.0          0.0 0.134234
+       200             1.0            1.0        1.0     1.0       1.0          0.0 0.256761
+       500             1.0            1.0        1.0     1.0       1.0          0.0 0.593439
+
+======================================================================
+CONCLUSIONES
+======================================================================
+
+Mejor configuración por tamaño de dataset:
+  - Alumnos: 1000
+  - Accuracy Test: 100.00%
+  - Overfitting: 0.00%
+
+Mejor configuración por número de árboles:
+  - Árboles: 100
+  - Accuracy Test: 100.00%
+  - Tiempo: 0.13s
+
+ARCHIVOS GENERADOS:
+  - Resultados: experimentos/resultados/
+  - Gráficos: experimentos/graficos/
+  - Modelos: experimentos/modelos/

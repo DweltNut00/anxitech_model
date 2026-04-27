@@ -1,0 +1,17 @@
+PRUEBAS ESTADÍSTICAS - COMPARACIÓN SINTÉTICOS vs REALES
+============================================================
+
+Test Kolmogorov-Smirnov:
+  Estadístico: 0.5649
+  p-valor: 0.0000
+  Interpretación: Distribuciones diferentes
+
+Test t de Student:
+  Estadístico t: 20.6899
+  p-valor: 0.0000
+  Interpretación: Medias diferentes
+
+Test Chi-cuadrado:
+  Chi-cuadrado: 167.5884
+  p-valor: 0.0000
+  Interpretación: Proporciones diferentes

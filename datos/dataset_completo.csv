@@ -1,0 +1,151 @@
+uid,promedio,semestre,num_materias,carrera,transporte,hogar,trabaja,beca,dass21_score,nivel_ansiedad
+estudiante_001,8.5,8,4,Química,Transporte publico,Con familiares,0,1,14.9,Alto
+estudiante_002,7.9,6,4,Ciencia de datos,Transporte publico,Con amigos,1,1,21.0,Alto
+estudiante_003,8.6,8,3,Industrial,Vehiculo particular,Vivo solo,0,0,17.7,Alto
+estudiante_004,9.5,1,4,Gestion empresarial,Vehiculo particular,Con conocidos,0,0,15.6,Alto
+estudiante_005,7.8,8,8,Mecanica,Vehiculo particular,Con familiares,1,0,21.0,Alto
+estudiante_006,7.8,4,8,Química,Caminando,Con familiares,0,0,21.0,Alto
+estudiante_007,9.6,1,3,Gestion empresarial,Vehiculo particular,Con familiares,0,0,10.2,Medio
+estudiante_008,8.8,8,7,Química,Vehiculo particular,Con familiares,0,0,21.0,Alto
+estudiante_009,7.5,4,7,Electronica,Caminando,Con familiares,0,1,21.0,Alto
+estudiante_010,8.5,6,3,Industrial,Transporte publico,Con familiares,0,0,18.5,Alto
+estudiante_011,7.5,8,7,Electronica,Transporte publico,Con familiares,1,0,21.0,Alto
+estudiante_012,7.5,4,7,Química,Transporte publico,Con familiares,0,0,21.0,Alto
+estudiante_013,8.2,3,8,Industrial (En linea),Transporte publico,Con conocidos,0,0,21.0,Alto
+estudiante_014,6.1,9,7,Industrial (En linea),Transporte publico,Con familiares,0,0,21.0,Alto
+estudiante_015,6.3,3,5,Electronica,Transporte publico,Con familiares,0,1,21.0,Alto
+estudiante_016,7.4,9,6,Industrial (En linea),Caminando,Con familiares,1,0,21.0,Alto
+estudiante_017,7.0,2,4,Química,Caminando,Con familiares,0,0,14.3,Alto
+estudiante_018,8.3,2,5,Ciencia de datos,Transporte publico,Con familiares,0,0,17.5,Alto
+estudiante_019,7.1,2,7,Electronica,Transporte publico,Con familiares,1,1,21.0,Alto
+estudiante_020,6.6,6,8,Mecanica,Transporte publico,Vivo solo,0,1,21.0,Alto
+estudiante_021,9.5,3,3,Mecanica,Vehiculo particular,Con familiares,0,1,11.0,Medio
+estudiante_022,7.8,9,7,Informatica,Vehiculo particular,Con amigos,0,0,21.0,Alto
+estudiante_023,8.1,4,8,Industrial,Caminando,Con familiares,0,0,21.0,Alto
+estudiante_024,6.6,1,6,Industrial (En linea),Transporte publico,Con familiares,0,0,21.0,Alto
+estudiante_025,7.5,4,7,Industrial (En linea),Caminando,Con familiares,0,1,20.1,Alto
+estudiante_026,8.1,1,3,En sistemas computacionales,No me transporto (En linea),Con familiares,1,1,18.9,Alto
+estudiante_027,6.8,5,8,Electrica,Transporte publico,Con familiares,0,0,21.0,Alto
+estudiante_028,8.4,4,8,Electronica,Caminando,Con familiares,0,1,21.0,Alto
+estudiante_029,7.4,8,8,En semiconductores,Vehiculo particular,Con familiares,0,1,21.0,Alto
+estudiante_030,7.7,8,6,Industrial (En linea),Vehiculo particular,Con familiares,0,0,19.1,Alto
+estudiante_031,7.4,7,7,Industrial,Transporte publico,Vivo solo,1,1,21.0,Alto
+estudiante_032,9.9,3,6,Informatica,Caminando,Vivo solo,0,1,16.7,Alto
+estudiante_033,8.0,1,4,Mecanica,Vehiculo particular,Vivo solo,0,0,17.5,Alto
+estudiante_034,6.9,1,4,Industrial (En linea),Caminando,Vivo solo,1,0,21.0,Alto
+estudiante_035,8.8,3,7,Informatica,Caminando,Con familiares,0,0,18.3,Alto
+estudiante_036,6.8,6,6,Química,Vehiculo particular,Con familiares,0,0,21.0,Alto
+estudiante_037,8.2,7,3,Química,No me transporto (En linea),Con familiares,0,0,14.6,Alto
+estudiante_038,6.0,6,8,Electrica,Vehiculo particular,Vivo solo,0,0,21.0,Alto
+estudiante_039,6.7,6,8,Ciencia de datos,Vehiculo particular,Con amigos,1,1,21.0,Alto
+estudiante_040,8.2,6,7,En semiconductores,Vehiculo particular,Con familiares,0,0,21.0,Alto
+estudiante_041,8.7,3,4,En sistemas computacionales,Transporte publico,Con familiares,0,0,18.5,Alto
+estudiante_042,8.2,6,4,Electrica,Vehiculo particular,Con amigos,0,0,19.3,Alto
+estudiante_043,7.9,8,8,Gestion empresarial,Vehiculo particular,Con conocidos,1,0,21.0,Alto
+estudiante_044,7.7,2,7,En sistemas computacionales,Vehiculo particular,Con familiares,0,1,21.0,Alto
+estudiante_045,6.5,5,6,Electronica,Caminando,Con familiares,1,0,21.0,Alto
+estudiante_046,7.3,1,4,Industrial,Transporte publico,Con amigos,0,0,21.0,Alto
+estudiante_047,7.5,1,6,Gestion empresarial,Vehiculo particular,Con familiares,1,0,21.0,Alto
+estudiante_048,9.1,5,4,Gestion empresarial,Vehiculo particular,Vivo solo,1,1,21.0,Alto
+estudiante_049,8.3,3,4,Electrica,Caminando,Con familiares,1,1,21.0,Alto
+estudiante_050,6.2,4,5,Ciencia de datos,Vehiculo particular,Con familiares,1,0,21.0,Alto
+estudiante_051,8.3,3,4,Electrica,Caminando,Con familiares,0,0,9.1,Medio
+estudiante_052,7.6,1,3,Electronica,Caminando,Con familiares,0,0,16.8,Alto
+estudiante_053,7.3,1,7,Mecanica,Transporte publico,Con familiares,0,0,21.0,Alto
+estudiante_054,8.6,5,7,Industrial (En linea),Transporte publico,Con familiares,0,0,21.0,Alto
+estudiante_055,9.0,6,6,Industrial (En linea),Vehiculo particular,Con familiares,0,0,17.7,Alto
+estudiante_056,8.9,3,4,Ciencia de datos,Transporte publico,Con familiares,0,0,13.1,Medio
+estudiante_057,7.2,9,3,Electronica,Transporte publico,Con amigos,0,0,21.0,Alto
+estudiante_058,7.7,5,6,Ciencia de datos,Vehiculo particular,Con familiares,0,1,21.0,Alto
+estudiante_059,8.3,8,5,Informatica,Transporte publico,Con familiares,1,0,20.5,Alto
+estudiante_060,9.0,1,6,Industrial (En linea),Vehiculo particular,Con familiares,0,0,20.2,Alto
+estudiante_061,7.5,5,6,Gestion empresarial,Vehiculo particular,Con familiares,1,0,21.0,Alto
+estudiante_062,7.8,3,4,En semiconductores,Vehiculo particular,Con familiares,1,0,21.0,Alto
+estudiante_063,6.9,1,5,Industrial,Transporte publico,Con amigos,1,1,21.0,Alto
+estudiante_064,6.8,4,6,Electronica,Vehiculo particular,Con familiares,0,0,21.0,Alto
+estudiante_065,8.8,5,3,En sistemas computacionales,Transporte publico,Con familiares,1,0,13.3,Medio
+estudiante_066,9.4,7,3,Ciencia de datos,Vehiculo particular,Con familiares,1,1,14.3,Alto
+estudiante_067,7.9,1,7,Industrial,Transporte publico,Con familiares,1,0,21.0,Alto
+estudiante_068,9.0,3,5,En sistemas computacionales,Caminando,Con familiares,0,0,13.2,Medio
+estudiante_069,8.4,2,5,Industrial,Vehiculo particular,Con familiares,0,1,15.7,Alto
+estudiante_070,7.4,9,7,En semiconductores,No me transporto (En linea),Con familiares,0,0,21.0,Alto
+estudiante_071,8.4,10,6,En sistemas computacionales,Vehiculo particular,Vivo solo,0,0,21.0,Alto
+estudiante_072,9.5,6,5,Electrica,Transporte publico,Con familiares,0,1,18.2,Alto
+estudiante_073,8.0,10,3,Química,Caminando,Con familiares,1,0,14.1,Alto
+estudiante_074,9.6,3,3,Electrica,Transporte publico,Con familiares,1,0,21.0,Alto
+estudiante_075,6.0,8,4,Industrial (En linea),Transporte publico,Con familiares,0,0,17.0,Alto
+estudiante_076,8.8,8,5,Química,Transporte publico,Con familiares,1,1,21.0,Alto
+estudiante_077,8.1,2,6,Electrica,Vehiculo particular,Con familiares,0,0,20.4,Alto
+estudiante_078,7.7,6,7,Química,Vehiculo particular,Con familiares,1,0,21.0,Alto
+estudiante_079,8.1,7,7,Mecanica,Transporte publico,Con amigos,1,0,21.0,Alto
+estudiante_080,6.0,2,6,Química,Caminando,Con familiares,0,0,21.0,Alto
+estudiante_081,7.8,10,8,Gestion empresarial,Transporte publico,Con familiares,0,0,21.0,Alto
+estudiante_082,8.4,2,4,Ciencia de datos,Transporte publico,Con familiares,1,0,21.0,Alto
+estudiante_083,9.5,10,7,Ciencia de datos,Transporte publico,Con conocidos,0,0,21.0,Alto
+estudiante_084,7.5,1,5,Gestion empresarial,Transporte publico,Con familiares,0,0,16.6,Alto
+estudiante_085,7.2,8,4,Industrial,Vehiculo particular,Con familiares,1,0,18.0,Alto
+estudiante_086,7.5,1,5,Informatica,Vehiculo particular,Con familiares,0,0,20.0,Alto
+estudiante_087,8.9,9,3,Industrial,Vehiculo particular,Vivo solo,1,0,18.0,Alto
+estudiante_088,8.3,6,4,En sistemas computacionales,Transporte publico,Con familiares,0,0,18.2,Alto
+estudiante_089,7.5,7,7,En sistemas computacionales,Transporte publico,Con familiares,1,1,21.0,Alto
+estudiante_090,8.5,10,4,Química,Transporte publico,Con familiares,0,0,15.0,Alto
+estudiante_091,8.1,7,4,Electrica,Caminando,Con familiares,1,0,20.0,Alto
+estudiante_092,9.0,10,4,Electrica,Transporte publico,Vivo solo,1,0,20.7,Alto
+estudiante_093,7.3,3,8,Ciencia de datos,Vehiculo particular,Con familiares,0,1,21.0,Alto
+estudiante_094,7.7,2,4,Electronica,No me transporto (En linea),Con familiares,0,1,16.5,Alto
+estudiante_095,7.6,9,5,Industrial,Vehiculo particular,Con familiares,1,0,21.0,Alto
+estudiante_096,6.5,8,3,Mecanica,Caminando,Con familiares,0,0,11.6,Medio
+estudiante_097,8.3,10,6,Industrial (En linea),Transporte publico,Con familiares,0,1,20.1,Alto
+estudiante_098,8.3,7,4,En semiconductores,Caminando,Con familiares,0,0,18.4,Alto
+estudiante_099,8.0,9,7,Electrica,Vehiculo particular,Con familiares,0,0,21.0,Alto
+estudiante_100,7.8,4,4,En semiconductores,Vehiculo particular,Con familiares,1,0,21.0,Alto
+estudiante_101,6.6,4,7,Química,Transporte publico,Con familiares,1,0,21.0,Alto
+estudiante_102,7.6,1,5,En semiconductores,Transporte publico,Vivo solo,0,1,21.0,Alto
+estudiante_103,7.7,8,7,Industrial (En linea),Transporte publico,Con familiares,0,1,21.0,Alto
+estudiante_104,7.2,3,6,Gestion empresarial,Vehiculo particular,Con familiares,0,0,21.0,Alto
+estudiante_105,7.8,7,3,Industrial (En linea),Caminando,Con familiares,0,0,7.2,Medio
+estudiante_106,8.4,2,7,En semiconductores,Vehiculo particular,Con familiares,0,1,21.0,Alto
+estudiante_107,9.9,2,7,Industrial (En linea),Transporte publico,Con familiares,1,1,21.0,Alto
+estudiante_108,8.2,7,3,Informatica,Caminando,Con conocidos,1,0,15.4,Alto
+estudiante_109,8.3,6,6,Química,Transporte publico,Con familiares,1,1,21.0,Alto
+estudiante_110,7.9,3,4,Industrial,Transporte publico,Con familiares,1,1,21.0,Alto
+estudiante_111,6.1,9,7,Gestion empresarial,Transporte publico,Con familiares,0,1,21.0,Alto
+estudiante_112,8.0,10,3,Mecanica,Vehiculo particular,Con familiares,1,0,16.7,Alto
+estudiante_113,8.1,6,5,Electrica,Transporte publico,Con familiares,0,0,21.0,Alto
+estudiante_114,10.0,10,3,En sistemas computacionales,Vehiculo particular,Con amigos,0,1,15.9,Alto
+estudiante_115,7.8,10,5,Industrial,Caminando,Vivo solo,0,0,21.0,Alto
+estudiante_116,8.3,6,6,En sistemas computacionales,Transporte publico,Vivo solo,0,1,21.0,Alto
+estudiante_117,8.0,1,4,Química,Vehiculo particular,Con familiares,1,0,20.0,Alto
+estudiante_118,6.8,4,3,Gestion empresarial,Transporte publico,Con familiares,0,0,18.6,Alto
+estudiante_119,9.1,10,8,Ciencia de datos,Transporte publico,Con familiares,0,0,21.0,Alto
+estudiante_120,8.8,6,7,Electrica,Vehiculo particular,Vivo solo,0,0,21.0,Alto
+estudiante_121,8.8,6,6,Informatica,Transporte publico,Con amigos,0,1,21.0,Alto
+estudiante_122,7.1,5,3,Ciencia de datos,Vehiculo particular,Con familiares,1,1,19.9,Alto
+estudiante_123,9.4,1,7,Química,Vehiculo particular,Vivo solo,0,1,21.0,Alto
+estudiante_124,6.6,8,3,Industrial,Vehiculo particular,Con familiares,0,0,17.6,Alto
+estudiante_125,8.6,5,5,Informatica,Vehiculo particular,Con familiares,0,0,17.6,Alto
+estudiante_126,10.0,5,3,Industrial (En linea),Vehiculo particular,Con familiares,0,0,11.8,Medio
+estudiante_127,7.0,7,8,En semiconductores,Vehiculo particular,Vivo solo,1,0,21.0,Alto
+estudiante_128,7.4,4,3,Informatica,Vehiculo particular,Vivo solo,0,0,17.2,Alto
+estudiante_129,8.1,6,3,Mecanica,Transporte publico,Vivo solo,1,0,21.0,Alto
+estudiante_130,7.5,4,8,Química,Transporte publico,Con familiares,0,0,21.0,Alto
+estudiante_131,6.4,3,6,Electronica,Caminando,Con amigos,0,0,21.0,Alto
+estudiante_132,8.1,7,3,En semiconductores,Vehiculo particular,Vivo solo,1,1,21.0,Alto
+estudiante_133,6.9,8,8,En sistemas computacionales,Transporte publico,Con familiares,0,1,21.0,Alto
+estudiante_134,8.5,4,7,Electrica,Vehiculo particular,Con familiares,0,0,21.0,Alto
+estudiante_135,7.1,2,5,En sistemas computacionales,Transporte publico,Con familiares,1,0,21.0,Alto
+estudiante_136,9.5,10,5,Informatica,Caminando,Con familiares,0,1,17.2,Alto
+estudiante_137,7.2,3,3,En sistemas computacionales,Transporte publico,Con familiares,1,0,21.0,Alto
+estudiante_138,7.7,1,6,Mecanica,Transporte publico,Con familiares,0,1,21.0,Alto
+estudiante_139,8.8,8,6,Química,Transporte publico,Con familiares,1,1,21.0,Alto
+estudiante_140,6.8,3,7,Industrial (En linea),Vehiculo particular,Con familiares,1,0,21.0,Alto
+estudiante_141,8.2,10,3,Industrial,Caminando,Con familiares,0,0,14.5,Alto
+estudiante_142,9.3,7,5,Electrica,Transporte publico,Con familiares,1,0,21.0,Alto
+estudiante_143,6.4,10,6,Mecanica,Caminando,Con familiares,0,0,21.0,Alto
+estudiante_144,8.2,5,3,Mecanica,Transporte publico,Con familiares,1,0,17.9,Alto
+estudiante_145,8.3,10,6,En sistemas computacionales,Caminando,Con familiares,0,1,18.1,Alto
+estudiante_146,8.8,5,8,En sistemas computacionales,Transporte publico,Vivo solo,0,0,21.0,Alto
+estudiante_147,6.8,7,6,Informatica,Transporte publico,Con familiares,0,0,21.0,Alto
+estudiante_148,6.7,9,5,Industrial,Vehiculo particular,Con amigos,0,1,21.0,Alto
+estudiante_149,8.5,5,4,Ciencia de datos,No me transporto (En linea),Con amigos,0,1,16.6,Alto
+estudiante_150,8.3,1,7,En sistemas computacionales,Caminando,Con familiares,1,0,21.0,Alto

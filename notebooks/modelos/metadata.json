@@ -1,0 +1,32 @@
+{
+  "fecha_entrenamiento": "2026-03-25T21:18:36.069384",
+  "n_registros": 500,
+  "n_features": 11,
+  "features": [
+    "promedio_anterior",
+    "semestre",
+    "materias",
+    "edad",
+    "transporte",
+    "familiares",
+    "trabajo",
+    "beca",
+    "sexo",
+    "estado_civil",
+    "carrera"
+  ],
+  "clases": [
+    "Bajo",
+    "Alto",
+    "Medio"
+  ],
+  "accuracy_test": 0.94,
+  "cv_mean": 0.9,
+  "cv_std": 0.013693063937629184,
+  "modelo_config": {
+    "n_estimators": 50,
+    "max_depth": 5,
+    "min_samples_split": 10,
+    "min_samples_leaf": 5
+  }
+}

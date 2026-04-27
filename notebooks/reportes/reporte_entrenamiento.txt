@@ -1,0 +1,139 @@
+======================================================================
+REPORTE DE ENTRENAMIENTO - ANXITECH (11 VARIABLES)
+======================================================================
+
+Fecha: 2026-02-03 15:15:22
+Dataset: dataset_completo_20260203_151426.csv
+Registros totales: 500
+Variables usadas: 11
+
+======================================================================
+CONFIGURACIÓN DEL MODELO
+======================================================================
+
+Algoritmo: Random Forest Classifier
+Número de árboles: 100
+Profundidad máxima: 5
+Min samples split: 10
+Min samples leaf: 5
+
+======================================================================
+VARIABLES UTILIZADAS (11)
+======================================================================
+
+ 1. promedio_anterior
+ 2. semestre
+ 3. materias
+ 4. edad
+ 5. transporte
+ 6. familiares
+ 7. trabajo
+ 8. beca
+ 9. sexo
+10. estado_civil
+11. carrera
+
+======================================================================
+DISTRIBUCIÓN DE CLASES
+======================================================================
+
+Bajo: 500 (100.0%)
+
+======================================================================
+DIVISIÓN DE DATOS
+======================================================================
+
+Entrenamiento (80%): 400 registros
+Prueba (20%):        100 registros
+Total:               500 registros
+
+======================================================================
+MÉTRICAS DE RENDIMIENTO
+======================================================================
+
+Accuracy Train: 100.00%
+Accuracy Test:  100.00%
+Diferencia:     0.00%
+
+Precision (weighted): 100.00%
+Recall (weighted):    100.00%
+F1-Score (weighted):  100.00%
+
+======================================================================
+VALIDACIÓN CRUZADA (5-Fold)
+======================================================================
+
+Fold 1: 100.00%
+Fold 2: 100.00%
+Fold 3: 100.00%
+Fold 4: 100.00%
+Fold 5: 100.00%
+
+Media: 100.00%
+Std:   0.00%
+
+======================================================================
+CLASSIFICATION REPORT
+======================================================================
+
+              precision    recall  f1-score   support
+
+        Bajo       1.00      1.00      1.00       100
+
+    accuracy                           1.00       100
+   macro avg       1.00      1.00      1.00       100
+weighted avg       1.00      1.00      1.00       100
+
+======================================================================
+IMPORTANCIA DE VARIABLES
+======================================================================
+
+promedio_anterior    0.0000
+semestre             0.0000
+materias             0.0000
+edad                 0.0000
+transporte           0.0000
+familiares           0.0000
+trabajo              0.0000
+beca                 0.0000
+sexo                 0.0000
+estado_civil         0.0000
+carrera              0.0000
+
+======================================================================
+CODIFICACIÓN DE VARIABLES CATEGÓRICAS
+======================================================================
+
+Sexo:
+  F → 0
+  M → 1
+
+Estado Civil:
+  Casado → 0
+  Soltero → 1
+
+Carrera:
+  ICD → 0
+  IGE → 1
+  IINF → 2
+  ISC → 3
+
+======================================================================
+INTERPRETACIÓN
+======================================================================
+
+✅ ACCURACY BUENO: El modelo tiene buen rendimiento.
+   Con datos reales de estudiantes, los resultados
+   reflejarán patrones genuinos de ansiedad.
+
+======================================================================
+ARCHIVOS GENERADOS
+======================================================================
+
+- Modelo: modelos/modelo_ansiedad.pkl
+- Encoders: modelos/encoder_*.pkl (3 archivos)
+- Metadata: modelos/metadata.json
+- Feature importance: reportes/feature_importance.csv
+- Gráficos: graficos_ml/ (4 archivos)
+- Este reporte: reportes/reporte_entrenamiento.txt
+

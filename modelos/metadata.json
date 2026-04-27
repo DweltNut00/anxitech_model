@@ -1,0 +1,47 @@
+{
+  "fecha_entrenamiento": "2025-11-03 12:20:18",
+  "num_registros": 150,
+  "num_variables": 11,
+  "features": [
+    "promedio_anterior",
+    "semestre",
+    "materias",
+    "edad",
+    "transporte",
+    "familiares",
+    "trabajo",
+    "beca",
+    "sexo",
+    "estado_civil",
+    "carrera"
+  ],
+  "clases": [
+    "Bajo",
+    "Medio"
+  ],
+  "accuracy_test": 0.5333333333333333,
+  "accuracy_train": 0.975,
+  "precision": 0.5045454545454545,
+  "recall": 0.5333333333333333,
+  "f1_score": 0.51,
+  "cv_mean": 0.5866666666666667,
+  "cv_std": 0.04988876515698587,
+  "train_size": 120,
+  "test_size": 30,
+  "encoders": {
+    "sexo": [
+      "F",
+      "M"
+    ],
+    "estado_civil": [
+      "Casado",
+      "Soltero"
+    ],
+    "carrera": [
+      "ICD",
+      "IGE",
+      "IINF",
+      "ISC"
+    ]
+  }
+}

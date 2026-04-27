@@ -1,0 +1,35 @@
+REPORTE DETALLADO - MODELO REALES
+============================================================
+
+Tamaño del dataset: 570 estudiantes
+Train/Test split: 70/30
+
+MÉTRICAS:
+  Accuracy:  0.7719 (77.19%)
+  Precision: 0.6753
+  Recall:    0.7719
+  F1-Score:  0.7073
+  CV Score:  0.7693 ± 0.0258
+
+CLASSIFICATION REPORT:
+              precision    recall  f1-score   support
+
+        Alto       0.00      0.00      0.00        15
+        Bajo       0.79      0.96      0.87       134
+       Medio       0.43      0.14      0.21        22
+
+    accuracy                           0.77       171
+   macro avg       0.41      0.37      0.36       171
+weighted avg       0.68      0.77      0.71       171
+
+FEATURE IMPORTANCE:
+  promedio_anterior   : 0.1933
+  semestre            : 0.1360
+  materias            : 0.0926
+  transporte          : 0.0796
+  trabajo             : 0.0534
+  beca                : 0.0349
+  carrera_cod         : 0.0818
+  sexo_cod            : 0.0389
+  estado_civil_cod    : 0.0330
+  edad                : 0.2564

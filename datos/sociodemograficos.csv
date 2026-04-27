@@ -1,0 +1,151 @@
+uid,carrera,transporte,hogar,trabaja,beca
+estudiante_001,Química,Transporte publico,Con familiares,0,1
+estudiante_002,Ciencia de datos,Transporte publico,Con amigos,1,1
+estudiante_003,Industrial,Vehiculo particular,Vivo solo,0,0
+estudiante_004,Gestion empresarial,Vehiculo particular,Con conocidos,0,0
+estudiante_005,Mecanica,Vehiculo particular,Con familiares,1,0
+estudiante_006,Química,Caminando,Con familiares,0,0
+estudiante_007,Gestion empresarial,Vehiculo particular,Con familiares,0,0
+estudiante_008,Química,Vehiculo particular,Con familiares,0,0
+estudiante_009,Electronica,Caminando,Con familiares,0,1
+estudiante_010,Industrial,Transporte publico,Con familiares,0,0
+estudiante_011,Electronica,Transporte publico,Con familiares,1,0
+estudiante_012,Química,Transporte publico,Con familiares,0,0
+estudiante_013,Industrial (En linea),Transporte publico,Con conocidos,0,0
+estudiante_014,Industrial (En linea),Transporte publico,Con familiares,0,0
+estudiante_015,Electronica,Transporte publico,Con familiares,0,1
+estudiante_016,Industrial (En linea),Caminando,Con familiares,1,0
+estudiante_017,Química,Caminando,Con familiares,0,0
+estudiante_018,Ciencia de datos,Transporte publico,Con familiares,0,0
+estudiante_019,Electronica,Transporte publico,Con familiares,1,1
+estudiante_020,Mecanica,Transporte publico,Vivo solo,0,1
+estudiante_021,Mecanica,Vehiculo particular,Con familiares,0,1
+estudiante_022,Informatica,Vehiculo particular,Con amigos,0,0
+estudiante_023,Industrial,Caminando,Con familiares,0,0
+estudiante_024,Industrial (En linea),Transporte publico,Con familiares,0,0
+estudiante_025,Industrial (En linea),Caminando,Con familiares,0,1
+estudiante_026,En sistemas computacionales,No me transporto (En linea),Con familiares,1,1
+estudiante_027,Electrica,Transporte publico,Con familiares,0,0
+estudiante_028,Electronica,Caminando,Con familiares,0,1
+estudiante_029,En semiconductores,Vehiculo particular,Con familiares,0,1
+estudiante_030,Industrial (En linea),Vehiculo particular,Con familiares,0,0
+estudiante_031,Industrial,Transporte publico,Vivo solo,1,1
+estudiante_032,Informatica,Caminando,Vivo solo,0,1
+estudiante_033,Mecanica,Vehiculo particular,Vivo solo,0,0
+estudiante_034,Industrial (En linea),Caminando,Vivo solo,1,0
+estudiante_035,Informatica,Caminando,Con familiares,0,0
+estudiante_036,Química,Vehiculo particular,Con familiares,0,0
+estudiante_037,Química,No me transporto (En linea),Con familiares,0,0
+estudiante_038,Electrica,Vehiculo particular,Vivo solo,0,0
+estudiante_039,Ciencia de datos,Vehiculo particular,Con amigos,1,1
+estudiante_040,En semiconductores,Vehiculo particular,Con familiares,0,0
+estudiante_041,En sistemas computacionales,Transporte publico,Con familiares,0,0
+estudiante_042,Electrica,Vehiculo particular,Con amigos,0,0
+estudiante_043,Gestion empresarial,Vehiculo particular,Con conocidos,1,0
+estudiante_044,En sistemas computacionales,Vehiculo particular,Con familiares,0,1
+estudiante_045,Electronica,Caminando,Con familiares,1,0
+estudiante_046,Industrial,Transporte publico,Con amigos,0,0
+estudiante_047,Gestion empresarial,Vehiculo particular,Con familiares,1,0
+estudiante_048,Gestion empresarial,Vehiculo particular,Vivo solo,1,1
+estudiante_049,Electrica,Caminando,Con familiares,1,1
+estudiante_050,Ciencia de datos,Vehiculo particular,Con familiares,1,0
+estudiante_051,Electrica,Caminando,Con familiares,0,0
+estudiante_052,Electronica,Caminando,Con familiares,0,0
+estudiante_053,Mecanica,Transporte publico,Con familiares,0,0
+estudiante_054,Industrial (En linea),Transporte publico,Con familiares,0,0
+estudiante_055,Industrial (En linea),Vehiculo particular,Con familiares,0,0
+estudiante_056,Ciencia de datos,Transporte publico,Con familiares,0,0
+estudiante_057,Electronica,Transporte publico,Con amigos,0,0
+estudiante_058,Ciencia de datos,Vehiculo particular,Con familiares,0,1
+estudiante_059,Informatica,Transporte publico,Con familiares,1,0
+estudiante_060,Industrial (En linea),Vehiculo particular,Con familiares,0,0
+estudiante_061,Gestion empresarial,Vehiculo particular,Con familiares,1,0
+estudiante_062,En semiconductores,Vehiculo particular,Con familiares,1,0
+estudiante_063,Industrial,Transporte publico,Con amigos,1,1
+estudiante_064,Electronica,Vehiculo particular,Con familiares,0,0
+estudiante_065,En sistemas computacionales,Transporte publico,Con familiares,1,0
+estudiante_066,Ciencia de datos,Vehiculo particular,Con familiares,1,1
+estudiante_067,Industrial,Transporte publico,Con familiares,1,0
+estudiante_068,En sistemas computacionales,Caminando,Con familiares,0,0
+estudiante_069,Industrial,Vehiculo particular,Con familiares,0,1
+estudiante_070,En semiconductores,No me transporto (En linea),Con familiares,0,0
+estudiante_071,En sistemas computacionales,Vehiculo particular,Vivo solo,0,0
+estudiante_072,Electrica,Transporte publico,Con familiares,0,1
+estudiante_073,Química,Caminando,Con familiares,1,0
+estudiante_074,Electrica,Transporte publico,Con familiares,1,0
+estudiante_075,Industrial (En linea),Transporte publico,Con familiares,0,0
+estudiante_076,Química,Transporte publico,Con familiares,1,1
+estudiante_077,Electrica,Vehiculo particular,Con familiares,0,0
+estudiante_078,Química,Vehiculo particular,Con familiares,1,0
+estudiante_079,Mecanica,Transporte publico,Con amigos,1,0
+estudiante_080,Química,Caminando,Con familiares,0,0
+estudiante_081,Gestion empresarial,Transporte publico,Con familiares,0,0
+estudiante_082,Ciencia de datos,Transporte publico,Con familiares,1,0
+estudiante_083,Ciencia de datos,Transporte publico,Con conocidos,0,0
+estudiante_084,Gestion empresarial,Transporte publico,Con familiares,0,0
+estudiante_085,Industrial,Vehiculo particular,Con familiares,1,0
+estudiante_086,Informatica,Vehiculo particular,Con familiares,0,0
+estudiante_087,Industrial,Vehiculo particular,Vivo solo,1,0
+estudiante_088,En sistemas computacionales,Transporte publico,Con familiares,0,0
+estudiante_089,En sistemas computacionales,Transporte publico,Con familiares,1,1
+estudiante_090,Química,Transporte publico,Con familiares,0,0
+estudiante_091,Electrica,Caminando,Con familiares,1,0
+estudiante_092,Electrica,Transporte publico,Vivo solo,1,0
+estudiante_093,Ciencia de datos,Vehiculo particular,Con familiares,0,1
+estudiante_094,Electronica,No me transporto (En linea),Con familiares,0,1
+estudiante_095,Industrial,Vehiculo particular,Con familiares,1,0
+estudiante_096,Mecanica,Caminando,Con familiares,0,0
+estudiante_097,Industrial (En linea),Transporte publico,Con familiares,0,1
+estudiante_098,En semiconductores,Caminando,Con familiares,0,0
+estudiante_099,Electrica,Vehiculo particular,Con familiares,0,0
+estudiante_100,En semiconductores,Vehiculo particular,Con familiares,1,0
+estudiante_101,Química,Transporte publico,Con familiares,1,0
+estudiante_102,En semiconductores,Transporte publico,Vivo solo,0,1
+estudiante_103,Industrial (En linea),Transporte publico,Con familiares,0,1
+estudiante_104,Gestion empresarial,Vehiculo particular,Con familiares,0,0
+estudiante_105,Industrial (En linea),Caminando,Con familiares,0,0
+estudiante_106,En semiconductores,Vehiculo particular,Con familiares,0,1
+estudiante_107,Industrial (En linea),Transporte publico,Con familiares,1,1
+estudiante_108,Informatica,Caminando,Con conocidos,1,0
+estudiante_109,Química,Transporte publico,Con familiares,1,1
+estudiante_110,Industrial,Transporte publico,Con familiares,1,1
+estudiante_111,Gestion empresarial,Transporte publico,Con familiares,0,1
+estudiante_112,Mecanica,Vehiculo particular,Con familiares,1,0
+estudiante_113,Electrica,Transporte publico,Con familiares,0,0
+estudiante_114,En sistemas computacionales,Vehiculo particular,Con amigos,0,1
+estudiante_115,Industrial,Caminando,Vivo solo,0,0
+estudiante_116,En sistemas computacionales,Transporte publico,Vivo solo,0,1
+estudiante_117,Química,Vehiculo particular,Con familiares,1,0
+estudiante_118,Gestion empresarial,Transporte publico,Con familiares,0,0
+estudiante_119,Ciencia de datos,Transporte publico,Con familiares,0,0
+estudiante_120,Electrica,Vehiculo particular,Vivo solo,0,0
+estudiante_121,Informatica,Transporte publico,Con amigos,0,1
+estudiante_122,Ciencia de datos,Vehiculo particular,Con familiares,1,1
+estudiante_123,Química,Vehiculo particular,Vivo solo,0,1
+estudiante_124,Industrial,Vehiculo particular,Con familiares,0,0
+estudiante_125,Informatica,Vehiculo particular,Con familiares,0,0
+estudiante_126,Industrial (En linea),Vehiculo particular,Con familiares,0,0
+estudiante_127,En semiconductores,Vehiculo particular,Vivo solo,1,0
+estudiante_128,Informatica,Vehiculo particular,Vivo solo,0,0
+estudiante_129,Mecanica,Transporte publico,Vivo solo,1,0
+estudiante_130,Química,Transporte publico,Con familiares,0,0
+estudiante_131,Electronica,Caminando,Con amigos,0,0
+estudiante_132,En semiconductores,Vehiculo particular,Vivo solo,1,1
+estudiante_133,En sistemas computacionales,Transporte publico,Con familiares,0,1
+estudiante_134,Electrica,Vehiculo particular,Con familiares,0,0
+estudiante_135,En sistemas computacionales,Transporte publico,Con familiares,1,0
+estudiante_136,Informatica,Caminando,Con familiares,0,1
+estudiante_137,En sistemas computacionales,Transporte publico,Con familiares,1,0
+estudiante_138,Mecanica,Transporte publico,Con familiares,0,1
+estudiante_139,Química,Transporte publico,Con familiares,1,1
+estudiante_140,Industrial (En linea),Vehiculo particular,Con familiares,1,0
+estudiante_141,Industrial,Caminando,Con familiares,0,0
+estudiante_142,Electrica,Transporte publico,Con familiares,1,0
+estudiante_143,Mecanica,Caminando,Con familiares,0,0
+estudiante_144,Mecanica,Transporte publico,Con familiares,1,0
+estudiante_145,En sistemas computacionales,Caminando,Con familiares,0,1
+estudiante_146,En sistemas computacionales,Transporte publico,Vivo solo,0,0
+estudiante_147,Informatica,Transporte publico,Con familiares,0,0
+estudiante_148,Industrial,Vehiculo particular,Con amigos,0,1
+estudiante_149,Ciencia de datos,No me transporto (En linea),Con amigos,0,1
+estudiante_150,En sistemas computacionales,Caminando,Con familiares,1,0

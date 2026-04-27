@@ -1,0 +1,71 @@
+import mysql.connector
+
+conn = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="",
+    database="anxitech"
+)
+cursor = conn.cursor()
+
+print("="*70)
+print("DIAGNÓSTICO DASS-21")
+print("="*70)
+
+# Ver estructura de preguntas
+cursor.execute("""
+    SELECT 
+        categoria,
+        COUNT(*) as cantidad,
+        GROUP_CONCAT(id ORDER BY id SEPARATOR ', ') as ids
+    FROM pregunta 
+    WHERE status = 1
+    GROUP BY categoria
+""")
+
+print("\n📋 PREGUNTAS POR CATEGORÍA:\n")
+for categoria, cantidad, ids in cursor.fetchall():
+    print(f"  {categoria}: {cantidad} preguntas")
+    print(f"    IDs: {ids}\n")
+
+# Total
+cursor.execute("SELECT COUNT(*) FROM pregunta WHERE status = 1")
+total = cursor.fetchone()[0]
+print(f"📊 TOTAL: {total} preguntas activas\n")
+
+# Ver algunas preguntas de ejemplo
+cursor.execute("""
+    SELECT id, pregunta, categoria 
+    FROM pregunta 
+    WHERE status = 1 
+    ORDER BY categoria, id 
+    LIMIT 10
+""")
+
+print("="*70)
+print("EJEMPLOS DE PREGUNTAS:")
+print("="*70)
+for id_p, pregunta, cat in cursor.fetchall():
+    print(f"{id_p:3d} | {cat:15s} | {pregunta[:60]}")
+
+cursor.close()
+conn.close()
+
+print("\n" + "="*70)
+print("ANÁLISIS:")
+print("="*70)
+
+if total == 21:
+    print("✅ Tienes 21 preguntas → DASS-21 COMPLETO")
+    print("   Deberías tener 7 de cada categoría (ansiedad, depresión, estrés)")
+elif total == 7:
+    print("✅ Tienes 7 preguntas → Solo escala de ANSIEDAD")
+elif total == 24:
+    print("⚠️  Tienes 24 preguntas → NO es DASS-21 estándar")
+    print("   Posibilidades:")
+    print("   - 3 preguntas extras no del DASS-21")
+    print("   - O usas una versión modificada")
+else:
+    print(f"⚠️  Tienes {total} preguntas → Revisar estructura")
+
+print("\n🔍 Ejecuta este script y muéstrame el resultado completo")

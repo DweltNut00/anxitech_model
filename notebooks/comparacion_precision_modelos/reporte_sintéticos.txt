@@ -1,0 +1,35 @@
+REPORTE DETALLADO - MODELO SINTÉTICOS
+============================================================
+
+Tamaño del dataset: 500 estudiantes
+Train/Test split: 70/30
+
+MÉTRICAS:
+  Accuracy:  0.3600 (36.00%)
+  Precision: 0.3426
+  Recall:    0.3600
+  F1-Score:  0.3383
+  CV Score:  0.3543 ± 0.0522
+
+CLASSIFICATION REPORT:
+              precision    recall  f1-score   support
+
+        Alto       0.25      0.07      0.11        30
+        Bajo       0.35      0.40      0.37        60
+       Medio       0.38      0.47      0.42        60
+
+    accuracy                           0.36       150
+   macro avg       0.33      0.31      0.30       150
+weighted avg       0.34      0.36      0.34       150
+
+FEATURE IMPORTANCE:
+  promedio_anterior   : 0.2621
+  semestre            : 0.1485
+  materias            : 0.1091
+  transporte          : 0.0884
+  trabajo             : 0.0367
+  beca                : 0.0371
+  carrera_cod         : 0.0776
+  sexo_cod            : 0.0473
+  estado_civil_cod    : 0.0283
+  edad                : 0.1650

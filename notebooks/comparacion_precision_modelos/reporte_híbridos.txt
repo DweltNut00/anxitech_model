@@ -1,0 +1,35 @@
+REPORTE DETALLADO - MODELO HÍBRIDOS
+============================================================
+
+Tamaño del dataset: 500 estudiantes
+Train/Test split: 70/30
+
+MÉTRICAS:
+  Accuracy:  0.7600 (76.00%)
+  Precision: 0.5957
+  Recall:    0.7600
+  F1-Score:  0.6679
+  CV Score:  0.7743 ± 0.0057
+
+CLASSIFICATION REPORT:
+              precision    recall  f1-score   support
+
+        Alto       0.00      0.00      0.00        14
+        Bajo       0.77      0.98      0.86       116
+       Medio       0.00      0.00      0.00        20
+
+    accuracy                           0.76       150
+   macro avg       0.26      0.33      0.29       150
+weighted avg       0.60      0.76      0.67       150
+
+FEATURE IMPORTANCE:
+  promedio_anterior   : 0.2624
+  semestre            : 0.1534
+  materias            : 0.1203
+  transporte          : 0.0830
+  trabajo             : 0.0402
+  beca                : 0.0436
+  carrera_cod         : 0.0924
+  sexo_cod            : 0.0357
+  estado_civil_cod    : 0.0257
+  edad                : 0.1433

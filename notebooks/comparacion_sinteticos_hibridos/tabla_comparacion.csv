@@ -1,0 +1,3 @@
+Modelo,Composición,n,Accuracy,Precision,F1-Score,CV (mean±std)
+Sintéticos,100% generados,500,0.6900,0.4761,0.5634,0.6900±0.0050
+Híbridos,DASS-21 real + ITO,500,0.7700,0.5929,0.6699,0.7750±0.0000

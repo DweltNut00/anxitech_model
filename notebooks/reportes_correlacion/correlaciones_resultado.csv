@@ -1,0 +1,12 @@
+﻿Variable,Tipo,Metodo,Estadistico,p_valor,Significativo,Intensidad
+promedio_anterior,Numerica,Spearman,-0.5771,0.0,Si,Alta
+semestre,Numerica,Spearman,0.4583,0.0,Si,Moderada
+materias,Numerica,Spearman,0.4656,0.0,Si,Moderada
+trabajo,Binaria,Point-Biserial,0.2362,0.0,Si,Baja
+transporte,Categorica,Kruskal-Wallis,19.4352,0.0002,Si,Pequeno (eta2=0.033)
+familiares,Categorica,Kruskal-Wallis,13.3244,0.004,Si,Pequeno (eta2=0.021)
+sexo,Categorica,Kruskal-Wallis,4.4131,0.0357,Si,Despreciable (eta2=0.007)
+edad,Numerica,Spearman,-0.0231,0.607,No,Despreciable
+beca,Binaria,Point-Biserial,0.0222,0.6198,No,Despreciable
+estado_civil,Categorica,Kruskal-Wallis,0.0922,0.7613,No,Despreciable (eta2=0.000)
+carrera,Categorica,Kruskal-Wallis,0.9608,0.8107,No,Despreciable (eta2=0.000)
