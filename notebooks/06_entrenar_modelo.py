@@ -1,10 +1,11 @@
 """
-ENTRENAMIENTO DE MODELO ML - ANXITECH (VERSIÓN CORREGIDA)
+ENTRENAMIENTO DE MODELO ML - ANXITECH (VERSIÓN ACTUALIZADA)
 ============================================================
-Extrae datos DIRECTAMENTE de la BD para evitar problemas con CSVs antiguos
+Extrae datos DIRECTAMENTE de la BD.
+Ahora con 15 features (incluye: maestros_estrictos, tiene_hijos, ingreso_mensual, horas_sueno)
+Parámetros ajustados para ~100 registros reales.
 
 Autor: Sistema AnxiTech
-Fecha: 2026-02-03
 """
 
 import pandas as pd
@@ -17,7 +18,6 @@ import warnings
 from datetime import datetime
 from pathlib import Path
 
-# Machine Learning
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
@@ -30,7 +30,6 @@ from sklearn.metrics import (
     f1_score
 )
 
-# Configuración
 warnings.filterwarnings('ignore')
 plt.style.use('seaborn-v0_8-darkgrid')
 sns.set_palette("husl")
@@ -69,10 +68,9 @@ try:
         password="",
         database="anxitech"
     )
-    
-    # Query para extraer datos con 11 variables
+
     query = """
-    SELECT 
+    SELECT
         c.promedio_anterior,
         c.semestre,
         c.materias,
@@ -84,6 +82,10 @@ try:
         c.sexo,
         c.estado_civil,
         c.carrera,
+        c.maestros_estrictos,
+        c.tiene_hijos,
+        c.ingreso_mensual,
+        c.horas_sueno,
         SUM(ap.valor) as suma_ansiedad,
         COUNT(ap.id) as num_respuestas
     FROM complemento c
@@ -93,17 +95,16 @@ try:
     GROUP BY c.id_alumno
     HAVING COUNT(ap.id) = 7
     """
-    
+
     df = pd.read_sql(query, conn)
     conn.close()
-    
+
     print(f"✅ Datos extraídos: {len(df)} registros")
-    
+
     if len(df) == 0:
         print("\n❌ ERROR: No hay datos en la BD")
-        print("   Ejecuta primero: python 10_cargar_dataset_hibrido_bd_CORREGIDO.py")
         exit()
-    
+
 except Exception as e:
     print(f"❌ Error: {e}")
     exit()
@@ -114,7 +115,6 @@ except Exception as e:
 print("\n📊 Clasificando niveles de ansiedad...")
 
 def clasificar_ansiedad(suma):
-    """Clasifica según suma DASS-21 (0-21)"""
     if suma <= 4:
         return 'Bajo'
     elif suma <= 7:
@@ -136,11 +136,9 @@ for nivel in ['Bajo', 'Medio', 'Alto']:
     emoji = {'Bajo': '🟢', 'Medio': '🟡', 'Alto': '🔴'}[nivel]
     print(f"      {emoji} {nivel}: {count} ({pct:.1f}%)")
 
-# Verificar que hay al menos 2 clases
 clases_unicas = df['nivel_ansiedad'].nunique()
 if clases_unicas < 2:
     print(f"\n❌ ERROR: Solo hay {clases_unicas} clase(s)")
-    print("   El modelo necesita al menos 2 clases diferentes")
     exit()
 
 # ============================================
@@ -150,11 +148,14 @@ print("\n" + "="*80)
 print("PREPARANDO DATOS PARA ENTRENAMIENTO")
 print("="*80)
 
-feature_names = ['promedio_anterior', 'semestre', 'materias', 'edad',
-                 'transporte', 'familiares', 'trabajo', 'beca',
-                 'sexo', 'estado_civil', 'carrera']
+feature_names = [
+    'promedio_anterior', 'semestre', 'materias', 'edad',
+    'transporte', 'familiares', 'trabajo', 'beca',
+    'sexo', 'estado_civil', 'carrera',
+    'maestros_estrictos', 'tiene_hijos', 'ingreso_mensual', 'horas_sueno'
+]
 
-print(f"\n📋 Variables (11):")
+print(f"\n📋 Variables ({len(feature_names)}):")
 for i, feat in enumerate(feature_names, 1):
     print(f"   {i:2d}. {feat}")
 
@@ -181,7 +182,6 @@ print(f"\n   ✅ Sexo: {list(le_sexo.classes_)}")
 print(f"   ✅ Estado civil: {list(le_estado_civil.classes_)}")
 print(f"   ✅ Carrera: {list(le_carrera.classes_)}")
 
-# Verificar valores nulos
 if X.isnull().sum().sum() > 0:
     print(f"\n⚠️  Valores nulos detectados")
     for col in X.columns:
@@ -197,7 +197,6 @@ if X.isnull().sum().sum() > 0:
 # ============================================
 print("\n📊 Dividiendo datos...")
 
-# Verificar que hay suficientes muestras por clase para el split
 min_samples = y.value_counts().min()
 if min_samples < 10:
     print(f"\n⚠️  ADVERTENCIA: Clase con pocas muestras ({min_samples})")
@@ -213,7 +212,6 @@ else:
 print(f"\n   ✅ Train: {len(X_train)} ({len(X_train)/len(X)*100:.1f}%)")
 print(f"   ✅ Test:  {len(X_test)} ({len(X_test)/len(X)*100:.1f}%)")
 
-# Verificar distribución en train y test
 print(f"\n   Distribución en TRAIN:")
 for nivel in ['Bajo', 'Medio', 'Alto']:
     count = (y_train == nivel).sum()
@@ -228,19 +226,22 @@ for nivel in ['Bajo', 'Medio', 'Alto']:
 
 # ============================================
 # 7. ENTRENAR MODELO
+# Parámetros ajustados para ~100 registros reales:
+#   - n_estimators=200: más árboles reducen varianza en muestras pequeñas
+#   - max_depth=4: menos profundidad evita memorizar los datos
 # ============================================
 print("\n" + "="*80)
 print("🤖 ENTRENANDO RANDOM FOREST")
 print("="*80)
 
 modelo = RandomForestClassifier(
-    n_estimators=50,         # Reducido para evitar overfitting
-    max_depth=5,             # Menos profundidad
-    min_samples_split=10,    # Más muestras para dividir
-    min_samples_leaf=5,      # Más muestras en hojas
-    max_features='sqrt',     # Solo sqrt(n) features por árbol
+    n_estimators=200,
+    max_depth=4,
+    min_samples_split=8,
+    min_samples_leaf=4,
+    max_features='sqrt',
     random_state=42,
-    class_weight='balanced',   # ← agregar esta línea
+    class_weight='balanced',
     n_jobs=-1
 )
 
@@ -277,7 +278,6 @@ elif abs(diff) < 0.15:
 else:
     print(f"   ❌ Diferencia: {abs(diff):.4f} - Overfitting significativo")
 
-# Métricas adicionales
 precision = precision_score(y_test, y_pred_test, average='weighted', zero_division=0)
 recall = recall_score(y_test, y_pred_test, average='weighted', zero_division=0)
 f1 = f1_score(y_test, y_pred_test, average='weighted', zero_division=0)
@@ -286,7 +286,6 @@ print(f"\n   Precision: {precision:.4f} ({precision*100:.2f}%)")
 print(f"   Recall:    {recall:.4f} ({recall*100:.2f}%)")
 print(f"   F1-Score:  {f1:.4f} ({f1*100:.2f}%)")
 
-# Classification report
 print(f"\n📋 Classification Report:")
 print(classification_report(y_test, y_pred_test, zero_division=0))
 report = classification_report(y_test, y_pred_test, zero_division=0, output_dict=True)
@@ -322,9 +321,8 @@ feature_imp = pd.DataFrame({
 print(f"\n   Ranking:")
 for idx, row in feature_imp.iterrows():
     bar = "█" * int(row['importance'] * 50)
-    print(f"      {row['feature']:20s} {row['importance']:.4f} {bar}")
+    print(f"      {row['feature']:25s} {row['importance']:.4f} {bar}")
 
-# Guardar
 feature_imp.to_csv('reportes/feature_importance.csv', index=False)
 print(f"\n   ✅ Guardado: reportes/feature_importance.csv")
 
@@ -335,7 +333,6 @@ print("\n" + "="*80)
 print("📊 GENERANDO VISUALIZACIONES")
 print("="*80)
 
-# 1. Matriz de confusión
 fig, axes = plt.subplots(2, 2, figsize=(14, 12))
 
 cm = confusion_matrix(y_test, y_pred_test, labels=['Bajo', 'Medio', 'Alto'])
@@ -346,19 +343,16 @@ axes[0,0].set_title('Matriz de Confusión')
 axes[0,0].set_ylabel('Real')
 axes[0,0].set_xlabel('Predicción')
 
-# 2. Feature importance
 feature_imp_sorted = feature_imp.sort_values('importance', ascending=True)
 axes[0,1].barh(feature_imp_sorted['feature'], feature_imp_sorted['importance'], color='skyblue')
 axes[0,1].set_xlabel('Importancia')
-axes[0,1].set_title('Importancia de Variables')
+axes[0,1].set_title('Importancia de Variables (15 features)')
 
-# 3. Distribución de clases
 y_test.value_counts().plot(kind='bar', ax=axes[1,0], color='coral')
 axes[1,0].set_title('Distribución Real (Test)')
 axes[1,0].set_ylabel('Cantidad')
 axes[1,0].set_xlabel('Nivel')
 
-# 4. Accuracy por fold
 axes[1,1].plot(range(1, 6), cv_scores, marker='o', linewidth=2, markersize=8)
 axes[1,1].axhline(cv_scores.mean(), color='r', linestyle='--', label=f'Media: {cv_scores.mean():.3f}')
 axes[1,1].set_xlabel('Fold')
@@ -387,7 +381,6 @@ joblib.dump(le_carrera, 'modelos/encoder_carrera.pkl')
 print(f"   ✅ Modelo: modelos/modelo_ansiedad.pkl")
 print(f"   ✅ Encoders: modelos/encoder_*.pkl")
 
-# Metadata
 import json
 metadata = {
     'fecha_entrenamiento': datetime.now().isoformat(),
@@ -435,16 +428,13 @@ if test_acc >= 0.90:
     if abs(train_acc - test_acc) > 0.10:
         print("   ⚠️  Accuracy muy alto + gran diferencia train/test = OVERFITTING")
         print("   → El modelo memorizó los datos en lugar de aprender")
-        print("   → Reducir complejidad del modelo o aumentar datos")
     else:
         print("   ✅ Modelo con excelente rendimiento")
 elif test_acc >= 0.70:
     print("   ✅ Modelo con buen rendimiento (accuracy aceptable)")
     print("   → Adecuado para sistema de screening de ansiedad")
 else:
-    print("   ⚠️  Accuracy bajo - revisar:")
-    print("   → Calidad de los datos")
-    print("   → Correlación entre variables y target")
+    print("   ⚠️  Accuracy bajo - revisar calidad de datos y correlaciones")
 
 print(f"\n🎯 PRÓXIMO PASO:")
 print("   El modelo está listo para usar en tu API")

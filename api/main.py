@@ -70,6 +70,10 @@ VALID_CORRELATION_FIELDS = [
     "sexo",
     "estado_civil",
     "carrera",
+    "maestros_estrictos",
+    "tiene_hijos",
+    "ingreso_mensual",
+    "horas_sueno",
 ]
 
 VALID_EVOLUTION_FACTORS = [
@@ -84,6 +88,10 @@ VALID_EVOLUTION_FACTORS = [
     "sexo",
     "estado_civil",
     "carrera",
+    "maestros_estrictos",
+    "tiene_hijos",
+    "ingreso_mensual",
+    "horas_sueno",
 ]
 
 
@@ -162,11 +170,7 @@ async def factores_riesgo():
         factores = analytics.get_factores_riesgo()
         if not factores:
             raise HTTPException(status_code=503, detail="Modelo ML no disponible")
-
-        return {
-            "factores": factores,
-            "fecha_analisis": datetime.now().isoformat(),
-        }
+        return {"factores": factores, "fecha_analisis": datetime.now().isoformat()}
     except HTTPException:
         raise
     except Exception as e:
@@ -182,7 +186,6 @@ async def correlacion_variable(variable: str, umbral: float):
                 status_code=400,
                 detail=f"Variable invalida. Validas: {', '.join(VALID_CORRELATION_FIELDS)}",
             )
-
         return analytics.get_correlacion_variable(variable, umbral)
     except HTTPException:
         raise
@@ -244,13 +247,10 @@ async def test_database():
     try:
         conn = analytics.get_db_connection()
         cursor = conn.cursor()
-
         cursor.execute("SELECT COUNT(*) as total FROM usuario")
         result = cursor.fetchone()
-
         cursor.close()
         conn.close()
-
         return {
             "status": "ok",
             "mensaje": "Conexion exitosa a la base de datos",
@@ -301,7 +301,6 @@ async def evolucion_factor_por_semestre(factor: str):
                 status_code=400,
                 detail=f"Factor invalido. Validos: {', '.join(VALID_EVOLUTION_FACTORS)}",
             )
-
         return analytics.get_evolucion_factor_por_semestre(factor)
     except HTTPException:
         raise
