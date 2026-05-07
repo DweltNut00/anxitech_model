@@ -719,7 +719,11 @@ class AnxiTechAnalytics:
             INNER JOIN alumno_pregunta ap ON c.id_alumno = ap.id_alumno
             INNER JOIN pregunta p ON ap.id_pregunta = p.id
             WHERE p.categoria = 'ansiedad' AND p.status = 1
-            GROUP BY c.id_alumno
+            GROUP BY c.id_alumno, c.promedio_anterior, c.semestre,
+                     c.materias, c.edad, c.transporte, c.familiares,
+                     c.trabajo, c.beca, c.sexo, c.estado_civil,
+                     c.carrera, c.maestros_estrictos, c.tiene_hijos,
+                     c.ingreso_mensual, c.horas_sueno
             HAVING COUNT(ap.id) = 7
             """
  
