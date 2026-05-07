@@ -740,7 +740,11 @@ class AnxiTechAnalytics:
             df['nivel_ansiedad'] = df['suma_ansiedad'].apply(clasificar)
  
             # Preparar features
-            feature_names = self.feature_names
+            feature_names = [
+                'promedio_anterior', 'semestre', 'materias', 'edad',
+                'transporte', 'familiares', 'trabajo', 'beca',
+                'sexo', 'estado_civil', 'carrera'
+            ]
             available = [f for f in feature_names if f in df.columns]
             X = df[available].copy()
             y = df['nivel_ansiedad'].copy()
