@@ -352,6 +352,20 @@ async def startup_event():
     print(f"Documentacion disponible en: {_docs_path()}")
     print("=" * 70)
 
+@app.get("/api/modelo/metricas", tags=["Modelo ML"])
+async def metricas_modelo():
+    """
+    Métricas completas del modelo: accuracy, F1, cross-validation,
+    feature importance completa, métricas por clase.
+    Para el artículo COMIA 2026.
+    """
+    try:
+        datos = analytics.get_metricas_modelo()
+        return datos
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+ 
+
 
 if __name__ == "__main__":
     import uvicorn

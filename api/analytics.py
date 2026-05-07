@@ -5,6 +5,12 @@ import joblib
 import mysql.connector
 import numpy as np
 import pandas as pd
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import (
+    classification_report, accuracy_score,
+    precision_score, recall_score, f1_score
+)
 
 if __package__:
     from .config import DB_CONFIG, MODELO_PATH, format_db_config_public
@@ -690,6 +696,190 @@ class AnxiTechAnalytics:
             return {'factor': factor, 'evolucion': resultado}
         finally:
             cursor.close()
+            conn.close()
+    
+    def get_metricas_modelo(self) -> Dict:
+        """Calcula métricas completas del modelo para el artículo."""
+        if not self.modelo:
+            return {"error": "Modelo no cargado"}
+ 
+        conn = self.get_db_connection()
+ 
+        try:
+            query = """
+            SELECT
+                c.promedio_anterior, c.semestre, c.materias, c.edad,
+                c.transporte, c.familiares, c.trabajo, c.beca,
+                c.sexo, c.estado_civil, c.carrera,
+                c.maestros_estrictos, c.tiene_hijos,
+                c.ingreso_mensual, c.horas_sueno,
+                SUM(ap.valor) as suma_ansiedad,
+                COUNT(ap.id) as num_respuestas
+            FROM complemento c
+            INNER JOIN alumno_pregunta ap ON c.id_alumno = ap.id_alumno
+            INNER JOIN pregunta p ON ap.id_pregunta = p.id
+            WHERE p.categoria = 'ansiedad' AND p.status = 1
+            GROUP BY c.id_alumno
+            HAVING COUNT(ap.id) = 7
+            """
+ 
+            df = pd.read_sql(query, conn)
+            if len(df) == 0:
+                return {"error": "No hay datos"}
+ 
+            # Clasificar niveles
+            def clasificar(s):
+                if s <= 4: return 'Bajo'
+                elif s <= 7: return 'Medio'
+                else: return 'Alto'
+ 
+            df['nivel_ansiedad'] = df['suma_ansiedad'].apply(clasificar)
+ 
+            # Preparar features
+            feature_names = self.feature_names
+            available = [f for f in feature_names if f in df.columns]
+            X = df[available].copy()
+            y = df['nivel_ansiedad'].copy()
+ 
+            for col in ['sexo', 'estado_civil', 'carrera']:
+                if col in X.columns:
+                    le = LabelEncoder()
+                    X[col] = le.fit_transform(X[col].astype(str))
+ 
+            for col in X.columns:
+                if X[col].isnull().sum() > 0:
+                    X[col] = X[col].fillna(X[col].median() if X[col].dtype in ['int64','float64'] else 0)
+ 
+            # División
+            min_class = y.value_counts().min()
+            use_stratify = min_class >= 3
+            X_train, X_test, y_train, y_test = train_test_split(
+                X, y, test_size=0.2, random_state=42,
+                stratify=y if use_stratify else None
+            )
+ 
+            # Predicciones
+            y_pred_train = self.modelo.predict(X_train)
+            y_pred_test = self.modelo.predict(X_test)
+            train_acc = accuracy_score(y_train, y_pred_train)
+            test_acc = accuracy_score(y_test, y_pred_test)
+ 
+            # Métricas generales
+            prec_w = precision_score(y_test, y_pred_test, average='weighted', zero_division=0)
+            rec_w = recall_score(y_test, y_pred_test, average='weighted', zero_division=0)
+            f1_w = f1_score(y_test, y_pred_test, average='weighted', zero_division=0)
+            f1_m = f1_score(y_test, y_pred_test, average='macro', zero_division=0)
+ 
+            # Cross-validation
+            n_folds = min(5, min_class) if min_class >= 2 else 2
+            try:
+                cv = cross_val_score(self.modelo, X, y, cv=n_folds, scoring='accuracy')
+                cv_mean, cv_std, cv_folds = float(cv.mean()), float(cv.std()), [float(s) for s in cv]
+            except:
+                cv_mean, cv_std, cv_folds = float(test_acc), 0.0, []
+ 
+            # Report por clase
+            report = classification_report(y_test, y_pred_test, zero_division=0, output_dict=True)
+            metricas_clase = {}
+            for nivel in ['Bajo', 'Medio', 'Alto']:
+                if nivel in report:
+                    metricas_clase[nivel] = {
+                        'precision': round(report[nivel]['precision'], 4),
+                        'recall': round(report[nivel]['recall'], 4),
+                        'f1_score': round(report[nivel]['f1-score'], 4),
+                        'support': int(report[nivel]['support'])
+                    }
+ 
+            # Feature importance COMPLETA
+            importancias = self.modelo.feature_importances_
+            dim_map = {
+                'promedio_anterior':'Académica','semestre':'Académica',
+                'materias':'Académica','carrera':'Académica',
+                'beca':'Académica','maestros_estrictos':'Académica',
+                'trabajo':'Socioeconómica','transporte':'Socioeconómica',
+                'familiares':'Socioeconómica','ingreso_mensual':'Socioeconómica',
+                'edad':'Demográfica','sexo':'Demográfica',
+                'estado_civil':'Demográfica','tiene_hijos':'Demográfica',
+                'horas_sueno':'Demográfica',
+            }
+            fi = []
+            for nombre, imp in zip(feature_names, importancias):
+                fi.append({
+                    'variable': nombre, 'importancia': round(float(imp), 4),
+                    'porcentaje': round(float(imp)*100, 1),
+                    'dimension': dim_map.get(nombre, 'Otra')
+                })
+            fi.sort(key=lambda x: x['importancia'], reverse=True)
+            for i, f in enumerate(fi): f['rank'] = i + 1
+ 
+            # Importancia por dimensión
+            dim_acum = {}
+            for f in fi:
+                dim_acum[f['dimension']] = dim_acum.get(f['dimension'], 0) + f['importancia']
+            dim_acum = {k: round(v*100,1) for k,v in sorted(dim_acum.items(), key=lambda x:x[1], reverse=True)}
+ 
+            # Distribución
+            dist = {}
+            for nivel in ['Bajo','Medio','Alto']:
+                c = int((y==nivel).sum())
+                dist[nivel] = {'cantidad': c, 'porcentaje': round(c/len(y)*100, 1)}
+ 
+            # Perfil
+            perfil = {
+                'n_total': int(len(df)),
+                'suma_media': round(float(df['suma_ansiedad'].mean()), 2),
+                'suma_std': round(float(df['suma_ansiedad'].std()), 2),
+                'suma_min': int(df['suma_ansiedad'].min()),
+                'suma_max': int(df['suma_ansiedad'].max()),
+            }
+            if 'edad' in df.columns:
+                perfil['edad_media'] = round(float(df['edad'].mean()), 1)
+                perfil['edad_rango'] = f"{int(df['edad'].min())}-{int(df['edad'].max())}"
+            if 'sexo' in df.columns:
+                perfil['sexo'] = {str(k):int(v) for k,v in df['sexo'].value_counts().items()}
+            if 'carrera' in df.columns:
+                perfil['carreras'] = {str(k):int(v) for k,v in df['carrera'].value_counts().items()}
+            if 'promedio_anterior' in df.columns:
+                perfil['promedio_medio'] = round(float(df['promedio_anterior'].mean()), 1)
+            if 'trabajo' in df.columns:
+                perfil['pct_trabaja'] = round(float(df['trabajo'].astype(int).mean())*100, 1)
+            if 'beca' in df.columns:
+                perfil['pct_beca'] = round(float(df['beca'].astype(int).mean())*100, 1)
+ 
+            return {
+                'n_registros': int(len(df)),
+                'n_features': len(feature_names),
+                'distribucion': dist,
+                'metricas': {
+                    'accuracy_train': round(float(train_acc), 4),
+                    'accuracy_test': round(float(test_acc), 4),
+                    'precision_weighted': round(float(prec_w), 4),
+                    'recall_weighted': round(float(rec_w), 4),
+                    'f1_weighted': round(float(f1_w), 4),
+                    'f1_macro': round(float(f1_m), 4),
+                },
+                'cross_validation': {
+                    'n_folds': n_folds, 'media': round(cv_mean, 4),
+                    'std': round(cv_std, 4), 'folds': cv_folds
+                },
+                'metricas_por_clase': metricas_clase,
+                'feature_importance': fi,
+                'importancia_por_dimension': dim_acum,
+                'perfil_muestra': perfil,
+                'config_modelo': {
+                    'n_estimators': getattr(self.modelo, 'n_estimators', None),
+                    'max_depth': getattr(self.modelo, 'max_depth', None),
+                },
+                'division': {
+                    'train': int(len(X_train)),
+                    'test': int(len(X_test)),
+                },
+                'timestamp': datetime.now().isoformat()
+            }
+ 
+        except Exception as e:
+            return {"error": str(e), "tipo": type(e).__name__}
+        finally:
             conn.close()
 
 
