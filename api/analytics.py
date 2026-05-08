@@ -702,9 +702,9 @@ class AnxiTechAnalytics:
         """Calcula métricas completas del modelo para el artículo."""
         if not self.modelo:
             return {"error": "Modelo no cargado"}
- 
+
         conn = self.get_db_connection()
- 
+
         try:
             query = """
             SELECT
@@ -726,23 +726,27 @@ class AnxiTechAnalytics:
                      c.ingreso_mensual, c.horas_sueno
             HAVING COUNT(ap.id) = 7
             """
- 
+
             df = pd.read_sql(query, conn)
             if len(df) == 0:
                 return {"error": "No hay datos"}
- 
-            # Clasificar niveles
+
+            # Forzar tipos numéricos en todas las columnas necesarias
+            for col in df.columns:
+                if col not in ['sexo', 'estado_civil', 'carrera']:
+                    df[col] = pd.to_numeric(df[col], errors='coerce')
+
+            df = df.dropna(subset=['suma_ansiedad'])
+
+            # Clasificar niveles (siempre como string)
             def clasificar(s):
                 if s <= 4: return 'Bajo'
                 elif s <= 7: return 'Medio'
                 else: return 'Alto'
- 
-            df['suma_ansiedad'] = pd.to_numeric(df['suma_ansiedad'], errors='coerce')
-            df = df.dropna(subset=['suma_ansiedad'])
+
             df['nivel_ansiedad'] = df['suma_ansiedad'].apply(clasificar).astype(str)
- 
- 
-            # Preparar features
+
+            # Preparar features (las 11 que el modelo conoce)
             feature_names = [
                 'promedio_anterior', 'semestre', 'materias', 'edad',
                 'transporte', 'familiares', 'trabajo', 'beca',
@@ -750,25 +754,19 @@ class AnxiTechAnalytics:
             ]
             available = [f for f in feature_names if f in df.columns]
             X = df[available].copy()
-            for col in X.columns:
-                if col not in ['sexo', 'estado_civil', 'carrera']:
-                    X[col] = pd.to_numeric(X[col], errors='coerce')
-
-            # Asegurar que suma_ansiedad sea numérica para clasificar bien
-            df['suma_ansiedad'] = pd.to_numeric(df['suma_ansiedad'], errors='coerce')
-            df['nivel_ansiedad'] = df['suma_ansiedad'].apply(clasificar)
-
             y = df['nivel_ansiedad'].copy()
 
+            # Codificar categóricas
             for col in ['sexo', 'estado_civil', 'carrera']:
                 if col in X.columns:
                     le = LabelEncoder()
                     X[col] = le.fit_transform(X[col].astype(str))
- 
+
+            # Imputar nulos
             for col in X.columns:
                 if X[col].isnull().sum() > 0:
-                    X[col] = X[col].fillna(X[col].median() if X[col].dtype in ['int64','float64'] else 0)
- 
+                    X[col] = X[col].fillna(X[col].median() if X[col].dtype in ['int64', 'float64'] else 0)
+
             # División
             min_class = y.value_counts().min()
             use_stratify = min_class >= 3
@@ -776,27 +774,27 @@ class AnxiTechAnalytics:
                 X, y, test_size=0.2, random_state=42,
                 stratify=y if use_stratify else None
             )
- 
+
             # Predicciones
             y_pred_train = self.modelo.predict(X_train)
             y_pred_test = self.modelo.predict(X_test)
             train_acc = accuracy_score(y_train, y_pred_train)
             test_acc = accuracy_score(y_test, y_pred_test)
- 
+
             # Métricas generales
             prec_w = precision_score(y_test, y_pred_test, average='weighted', zero_division=0)
             rec_w = recall_score(y_test, y_pred_test, average='weighted', zero_division=0)
             f1_w = f1_score(y_test, y_pred_test, average='weighted', zero_division=0)
             f1_m = f1_score(y_test, y_pred_test, average='macro', zero_division=0)
- 
+
             # Cross-validation
             n_folds = min(5, min_class) if min_class >= 2 else 2
             try:
                 cv = cross_val_score(self.modelo, X, y, cv=n_folds, scoring='accuracy')
                 cv_mean, cv_std, cv_folds = float(cv.mean()), float(cv.std()), [float(s) for s in cv]
-            except:
+            except Exception:
                 cv_mean, cv_std, cv_folds = float(test_acc), 0.0, []
- 
+
             # Report por clase
             report = classification_report(y_test, y_pred_test, zero_division=0, output_dict=True)
             metricas_clase = {}
@@ -808,42 +806,44 @@ class AnxiTechAnalytics:
                         'f1_score': round(report[nivel]['f1-score'], 4),
                         'support': int(report[nivel]['support'])
                     }
- 
-            # Feature importance COMPLETA
+
+            # Feature importance COMPLETA (las 11 del modelo)
             importancias = self.modelo.feature_importances_
             dim_map = {
-                'promedio_anterior':'Académica','semestre':'Académica',
-                'materias':'Académica','carrera':'Académica',
-                'beca':'Académica','maestros_estrictos':'Académica',
-                'trabajo':'Socioeconómica','transporte':'Socioeconómica',
-                'familiares':'Socioeconómica','ingreso_mensual':'Socioeconómica',
-                'edad':'Demográfica','sexo':'Demográfica',
-                'estado_civil':'Demográfica','tiene_hijos':'Demográfica',
-                'horas_sueno':'Demográfica',
+                'promedio_anterior': 'Académica', 'semestre': 'Académica',
+                'materias': 'Académica', 'carrera': 'Académica',
+                'beca': 'Académica',
+                'trabajo': 'Socioeconómica', 'transporte': 'Socioeconómica',
+                'familiares': 'Socioeconómica',
+                'edad': 'Demográfica', 'sexo': 'Demográfica',
+                'estado_civil': 'Demográfica',
             }
             fi = []
             for nombre, imp in zip(feature_names, importancias):
                 fi.append({
-                    'variable': nombre, 'importancia': round(float(imp), 4),
-                    'porcentaje': round(float(imp)*100, 1),
+                    'variable': nombre,
+                    'importancia': round(float(imp), 4),
+                    'porcentaje': round(float(imp) * 100, 1),
                     'dimension': dim_map.get(nombre, 'Otra')
                 })
             fi.sort(key=lambda x: x['importancia'], reverse=True)
-            for i, f in enumerate(fi): f['rank'] = i + 1
- 
+            for i, f in enumerate(fi):
+                f['rank'] = i + 1
+
             # Importancia por dimensión
             dim_acum = {}
             for f in fi:
                 dim_acum[f['dimension']] = dim_acum.get(f['dimension'], 0) + f['importancia']
-            dim_acum = {k: round(v*100,1) for k,v in sorted(dim_acum.items(), key=lambda x:x[1], reverse=True)}
- 
+            dim_acum = {k: round(v * 100, 1) for k, v in
+                        sorted(dim_acum.items(), key=lambda x: x[1], reverse=True)}
+
             # Distribución
             dist = {}
-            for nivel in ['Bajo','Medio','Alto']:
-                c = int((y==nivel).sum())
-                dist[nivel] = {'cantidad': c, 'porcentaje': round(c/len(y)*100, 1)}
- 
-            # Perfil
+            for nivel in ['Bajo', 'Medio', 'Alto']:
+                c = int((y == nivel).sum())
+                dist[nivel] = {'cantidad': c, 'porcentaje': round(c / len(y) * 100, 1)}
+
+            # Perfil descriptivo
             perfil = {
                 'n_total': int(len(df)),
                 'suma_media': round(float(df['suma_ansiedad'].mean()), 2),
@@ -855,16 +855,16 @@ class AnxiTechAnalytics:
                 perfil['edad_media'] = round(float(df['edad'].mean()), 1)
                 perfil['edad_rango'] = f"{int(df['edad'].min())}-{int(df['edad'].max())}"
             if 'sexo' in df.columns:
-                perfil['sexo'] = {str(k):int(v) for k,v in df['sexo'].value_counts().items()}
+                perfil['sexo'] = {str(k): int(v) for k, v in df['sexo'].value_counts().items()}
             if 'carrera' in df.columns:
-                perfil['carreras'] = {str(k):int(v) for k,v in df['carrera'].value_counts().items()}
+                perfil['carreras'] = {str(k): int(v) for k, v in df['carrera'].value_counts().items()}
             if 'promedio_anterior' in df.columns:
                 perfil['promedio_medio'] = round(float(df['promedio_anterior'].mean()), 1)
             if 'trabajo' in df.columns:
-                perfil['pct_trabaja'] = round(float(df['trabajo'].astype(int).mean())*100, 1)
+                perfil['pct_trabaja'] = round(float(df['trabajo'].astype(int).mean()) * 100, 1)
             if 'beca' in df.columns:
-                perfil['pct_beca'] = round(float(df['beca'].astype(int).mean())*100, 1)
- 
+                perfil['pct_beca'] = round(float(df['beca'].astype(int).mean()) * 100, 1)
+
             return {
                 'n_registros': int(len(df)),
                 'n_features': len(feature_names),
@@ -895,7 +895,7 @@ class AnxiTechAnalytics:
                 },
                 'timestamp': datetime.now().isoformat()
             }
- 
+
         except Exception as e:
             return {"error": str(e), "tipo": type(e).__name__}
         finally:
