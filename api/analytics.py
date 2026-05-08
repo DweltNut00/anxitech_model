@@ -731,20 +731,21 @@ class AnxiTechAnalytics:
             if len(df) == 0:
                 return {"error": "No hay datos"}
 
-            # Forzar tipos numéricos en todas las columnas necesarias
+            # Forzar TODOS los tipos desde el inicio
             for col in df.columns:
                 if col not in ['sexo', 'estado_civil', 'carrera']:
-                    df[col] = pd.to_numeric(df[col], errors='coerce')
+                    df[col] = pd.to_numeric(df[col], errors='coerce').astype(float)
 
             df = df.dropna(subset=['suma_ansiedad'])
 
-            # Clasificar niveles (siempre como string)
+            # Clasificar niveles
             def clasificar(s):
                 if s <= 4: return 'Bajo'
                 elif s <= 7: return 'Medio'
                 else: return 'Alto'
 
-            df['nivel_ansiedad'] = df['suma_ansiedad'].apply(clasificar).astype(str)
+            # Crear y como lista pura de strings (evita mezcla de tipos)
+            df['nivel_ansiedad'] = [clasificar(s) for s in df['suma_ansiedad'].values]
 
             # Preparar features (las 11 que el modelo conoce)
             feature_names = [
@@ -754,7 +755,7 @@ class AnxiTechAnalytics:
             ]
             available = [f for f in feature_names if f in df.columns]
             X = df[available].copy()
-            y = df['nivel_ansiedad'].copy()
+            y = pd.Series([str(v) for v in df['nivel_ansiedad'].values])
 
             # Codificar categóricas
             for col in ['sexo', 'estado_civil', 'carrera']:
