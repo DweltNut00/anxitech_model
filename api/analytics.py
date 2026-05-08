@@ -912,7 +912,7 @@ class AnxiTechAnalytics:
                     'train': int(len(X_train)),
                     'test': int(len(X_test)),
                 },
-                'timestamp': datetime.now().isoformat()
+                'timestamp': datetime.datetime.now().isoformat()
             }
 
         except Exception as e:
