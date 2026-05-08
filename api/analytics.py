@@ -737,7 +737,10 @@ class AnxiTechAnalytics:
                 elif s <= 7: return 'Medio'
                 else: return 'Alto'
  
-            df['nivel_ansiedad'] = df['suma_ansiedad'].apply(clasificar)
+            df['suma_ansiedad'] = pd.to_numeric(df['suma_ansiedad'], errors='coerce')
+            df = df.dropna(subset=['suma_ansiedad'])
+            df['nivel_ansiedad'] = df['suma_ansiedad'].apply(clasificar).astype(str)
+ 
  
             # Preparar features
             feature_names = [
