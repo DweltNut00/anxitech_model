@@ -747,8 +747,16 @@ class AnxiTechAnalytics:
             ]
             available = [f for f in feature_names if f in df.columns]
             X = df[available].copy()
+            for col in X.columns:
+                if col not in ['sexo', 'estado_civil', 'carrera']:
+                    X[col] = pd.to_numeric(X[col], errors='coerce')
+
+            # Asegurar que suma_ansiedad sea numérica para clasificar bien
+            df['suma_ansiedad'] = pd.to_numeric(df['suma_ansiedad'], errors='coerce')
+            df['nivel_ansiedad'] = df['suma_ansiedad'].apply(clasificar)
+
             y = df['nivel_ansiedad'].copy()
- 
+
             for col in ['sexo', 'estado_civil', 'carrera']:
                 if col in X.columns:
                     le = LabelEncoder()
