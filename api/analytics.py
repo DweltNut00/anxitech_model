@@ -1,3 +1,4 @@
+import datetime
 from pathlib import Path
 from typing import Dict, List
 
@@ -699,10 +700,7 @@ class AnxiTechAnalytics:
             conn.close()
     
     def get_metricas_modelo(self) -> Dict:
-        """Calcula métricas completas del modelo para el artículo."""
-        if not self.modelo:
-            return {"error": "Modelo no cargado"}
-
+        """Entrena y evalúa un modelo nuevo con los datos reales de la BD."""
         conn = self.get_db_connection()
 
         try:
@@ -713,8 +711,7 @@ class AnxiTechAnalytics:
                 c.sexo, c.estado_civil, c.carrera,
                 c.maestros_estrictos, c.tiene_hijos,
                 c.ingreso_mensual, c.horas_sueno,
-                SUM(ap.valor) as suma_ansiedad,
-                COUNT(ap.id) as num_respuestas
+                SUM(ap.valor) as suma_ansiedad
             FROM complemento c
             INNER JOIN alumno_pregunta ap ON c.id_alumno = ap.id_alumno
             INNER JOIN pregunta p ON ap.id_pregunta = p.id
@@ -731,72 +728,92 @@ class AnxiTechAnalytics:
             if len(df) == 0:
                 return {"error": "No hay datos"}
 
-            # Forzar TODOS los tipos desde el inicio
-            for col in df.columns:
-                if col not in ['sexo', 'estado_civil', 'carrera']:
+            # ── 1. Limpiar tipos ──
+            numericas = ['promedio_anterior', 'semestre', 'materias', 'edad',
+                         'transporte', 'familiares', 'trabajo', 'beca',
+                         'maestros_estrictos', 'tiene_hijos', 'ingreso_mensual',
+                         'horas_sueno', 'suma_ansiedad']
+            for col in numericas:
+                if col in df.columns:
                     df[col] = pd.to_numeric(df[col], errors='coerce').astype(float)
 
             df = df.dropna(subset=['suma_ansiedad'])
 
-            # Clasificar niveles
-            def clasificar(s):
-                if s <= 4: return 'Bajo'
-                elif s <= 7: return 'Medio'
-                else: return 'Alto'
+            # ── 2. Clasificar niveles ──
+            niveles = []
+            for s in df['suma_ansiedad'].values:
+                if float(s) <= 4:
+                    niveles.append('Bajo')
+                elif float(s) <= 7:
+                    niveles.append('Medio')
+                else:
+                    niveles.append('Alto')
 
-            # Crear y como lista pura de strings (evita mezcla de tipos)
-            df['nivel_ansiedad'] = [clasificar(s) for s in df['suma_ansiedad'].values]
-
-            # Preparar features (las 11 que el modelo conoce)
+            # ── 3. Preparar features ──
             feature_names = [
                 'promedio_anterior', 'semestre', 'materias', 'edad',
                 'transporte', 'familiares', 'trabajo', 'beca',
                 'sexo', 'estado_civil', 'carrera'
             ]
             available = [f for f in feature_names if f in df.columns]
-            X = df[available].copy()
-            y = pd.Series([str(v) for v in df['nivel_ansiedad'].values])
 
-            # Codificar categóricas
+            X = df[available].copy()
+
             for col in ['sexo', 'estado_civil', 'carrera']:
                 if col in X.columns:
                     le = LabelEncoder()
                     X[col] = le.fit_transform(X[col].astype(str))
 
-            # Imputar nulos
             for col in X.columns:
-                if X[col].isnull().sum() > 0:
-                    X[col] = X[col].fillna(X[col].median() if X[col].dtype in ['int64', 'float64'] else 0)
+                if col not in ['sexo', 'estado_civil', 'carrera']:
+                    X[col] = pd.to_numeric(X[col], errors='coerce').astype(float)
 
-            # División
-            min_class = y.value_counts().min()
+            X = X.fillna(0)
+
+            y = np.array(niveles)  # numpy array puro de strings
+
+            # ── 4. División ──
+            from collections import Counter
+            counts = Counter(y)
+            min_class = min(counts.values())
             use_stratify = min_class >= 3
+
             X_train, X_test, y_train, y_test = train_test_split(
-                X, y, test_size=0.2, random_state=42,
+                X.values, y, test_size=0.2, random_state=42,
                 stratify=y if use_stratify else None
             )
 
-            # Predicciones
-            y_pred_train = self.modelo.predict(X_train)
-            y_pred_test = self.modelo.predict(X_test)
-            train_acc = accuracy_score(y_train, y_pred_train)
-            test_acc = accuracy_score(y_test, y_pred_test)
+            # ── 5. Entrenar modelo NUEVO con datos reales ──
+            from sklearn.ensemble import RandomForestClassifier as RFC
+            modelo_nuevo = RFC(
+                n_estimators=200, max_depth=4,
+                min_samples_split=5, min_samples_leaf=3,
+                max_features='sqrt', random_state=42,
+                class_weight='balanced', n_jobs=-1
+            )
+            modelo_nuevo.fit(X_train, y_train)
 
-            # Métricas generales
-            prec_w = precision_score(y_test, y_pred_test, average='weighted', zero_division=0)
-            rec_w = recall_score(y_test, y_pred_test, average='weighted', zero_division=0)
-            f1_w = f1_score(y_test, y_pred_test, average='weighted', zero_division=0)
-            f1_m = f1_score(y_test, y_pred_test, average='macro', zero_division=0)
+            # ── 6. Predicciones ──
+            y_pred_train = modelo_nuevo.predict(X_train)
+            y_pred_test = modelo_nuevo.predict(X_test)
 
-            # Cross-validation
+            train_acc = float(accuracy_score(y_train, y_pred_train))
+            test_acc = float(accuracy_score(y_test, y_pred_test))
+            prec_w = float(precision_score(y_test, y_pred_test, average='weighted', zero_division=0))
+            rec_w = float(recall_score(y_test, y_pred_test, average='weighted', zero_division=0))
+            f1_w = float(f1_score(y_test, y_pred_test, average='weighted', zero_division=0))
+            f1_m = float(f1_score(y_test, y_pred_test, average='macro', zero_division=0))
+
+            # ── 7. Cross-validation ──
             n_folds = min(5, min_class) if min_class >= 2 else 2
             try:
-                cv = cross_val_score(self.modelo, X, y, cv=n_folds, scoring='accuracy')
-                cv_mean, cv_std, cv_folds = float(cv.mean()), float(cv.std()), [float(s) for s in cv]
+                cv = cross_val_score(modelo_nuevo, X.values, y, cv=n_folds, scoring='accuracy')
+                cv_mean, cv_std = float(cv.mean()), float(cv.std())
+                cv_folds = [float(s) for s in cv]
             except Exception:
-                cv_mean, cv_std, cv_folds = float(test_acc), 0.0, []
+                cv_mean, cv_std, cv_folds = test_acc, 0.0, []
 
-            # Report por clase
+            # ── 8. Report por clase ──
             report = classification_report(y_test, y_pred_test, zero_division=0, output_dict=True)
             metricas_clase = {}
             for nivel in ['Bajo', 'Medio', 'Alto']:
@@ -808,8 +825,8 @@ class AnxiTechAnalytics:
                         'support': int(report[nivel]['support'])
                     }
 
-            # Feature importance COMPLETA (las 11 del modelo)
-            importancias = self.modelo.feature_importances_
+            # ── 9. Feature importance ──
+            importancias = modelo_nuevo.feature_importances_
             dim_map = {
                 'promedio_anterior': 'Académica', 'semestre': 'Académica',
                 'materias': 'Académica', 'carrera': 'Académica',
@@ -820,7 +837,7 @@ class AnxiTechAnalytics:
                 'estado_civil': 'Demográfica',
             }
             fi = []
-            for nombre, imp in zip(feature_names, importancias):
+            for nombre, imp in zip(available, importancias):
                 fi.append({
                     'variable': nombre,
                     'importancia': round(float(imp), 4),
@@ -831,20 +848,19 @@ class AnxiTechAnalytics:
             for i, f in enumerate(fi):
                 f['rank'] = i + 1
 
-            # Importancia por dimensión
             dim_acum = {}
             for f in fi:
                 dim_acum[f['dimension']] = dim_acum.get(f['dimension'], 0) + f['importancia']
             dim_acum = {k: round(v * 100, 1) for k, v in
                         sorted(dim_acum.items(), key=lambda x: x[1], reverse=True)}
 
-            # Distribución
+            # ── 10. Distribución ──
             dist = {}
             for nivel in ['Bajo', 'Medio', 'Alto']:
-                c = int((y == nivel).sum())
+                c = int(np.sum(y == nivel))
                 dist[nivel] = {'cantidad': c, 'porcentaje': round(c / len(y) * 100, 1)}
 
-            # Perfil descriptivo
+            # ── 11. Perfil descriptivo ──
             perfil = {
                 'n_total': int(len(df)),
                 'suma_media': round(float(df['suma_ansiedad'].mean()), 2),
@@ -862,21 +878,22 @@ class AnxiTechAnalytics:
             if 'promedio_anterior' in df.columns:
                 perfil['promedio_medio'] = round(float(df['promedio_anterior'].mean()), 1)
             if 'trabajo' in df.columns:
-                perfil['pct_trabaja'] = round(float(df['trabajo'].astype(int).mean()) * 100, 1)
+                perfil['pct_trabaja'] = round(float(pd.to_numeric(df['trabajo'], errors='coerce').mean()) * 100, 1)
             if 'beca' in df.columns:
-                perfil['pct_beca'] = round(float(df['beca'].astype(int).mean()) * 100, 1)
+                perfil['pct_beca'] = round(float(pd.to_numeric(df['beca'], errors='coerce').mean()) * 100, 1)
 
             return {
                 'n_registros': int(len(df)),
-                'n_features': len(feature_names),
+                'n_features': len(available),
+                'nota': 'Modelo entrenado y evaluado sobre datos reales (no usa modelo pre-cargado)',
                 'distribucion': dist,
                 'metricas': {
-                    'accuracy_train': round(float(train_acc), 4),
-                    'accuracy_test': round(float(test_acc), 4),
-                    'precision_weighted': round(float(prec_w), 4),
-                    'recall_weighted': round(float(rec_w), 4),
-                    'f1_weighted': round(float(f1_w), 4),
-                    'f1_macro': round(float(f1_m), 4),
+                    'accuracy_train': round(train_acc, 4),
+                    'accuracy_test': round(test_acc, 4),
+                    'precision_weighted': round(prec_w, 4),
+                    'recall_weighted': round(rec_w, 4),
+                    'f1_weighted': round(f1_w, 4),
+                    'f1_macro': round(f1_m, 4),
                 },
                 'cross_validation': {
                     'n_folds': n_folds, 'media': round(cv_mean, 4),
@@ -887,8 +904,9 @@ class AnxiTechAnalytics:
                 'importancia_por_dimension': dim_acum,
                 'perfil_muestra': perfil,
                 'config_modelo': {
-                    'n_estimators': getattr(self.modelo, 'n_estimators', None),
-                    'max_depth': getattr(self.modelo, 'max_depth', None),
+                    'tipo': 'Random Forest (entrenado en datos reales)',
+                    'n_estimators': 200,
+                    'max_depth': 4,
                 },
                 'division': {
                     'train': int(len(X_train)),
@@ -898,7 +916,8 @@ class AnxiTechAnalytics:
             }
 
         except Exception as e:
-            return {"error": str(e), "tipo": type(e).__name__}
+            import traceback
+            return {"error": str(e), "tipo": type(e).__name__, "trace": traceback.format_exc()}
         finally:
             conn.close()
 
