@@ -365,7 +365,22 @@ async def metricas_modelo():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
  
+@app.get("/api/stats/sankey", tags=["Dashboard"])
+async def sankey_data():
+    """Flujo de factores de riesgo hacia niveles de ansiedad."""
+    try:
+        return analytics.get_sankey_data()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener datos Sankey: {e}") from e
 
+
+@app.get("/api/stats/gauge", tags=["Dashboard"])
+async def gauge_data():
+    """Indicador global de riesgo institucional."""
+    try:
+        return analytics.get_gauge_data()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener datos Gauge: {e}") from e
 
 if __name__ == "__main__":
     import uvicorn

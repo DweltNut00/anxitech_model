@@ -921,5 +921,124 @@ class AnxiTechAnalytics:
         finally:
             conn.close()
 
+    def get_sankey_data(self) -> Dict:
+        """Flujo: Factor de riesgo → Nivel de ansiedad"""
+        conn = self.get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        try:
+            factores_condiciones = [
+                {'factor': 'Promedio bajo', 'condicion': 'c.promedio_anterior < 70'},
+                {'factor': 'Materias 7+',   'condicion': 'c.materias >= 7'},
+                {'factor': 'Trabaja',        'condicion': 'c.trabajo = 1'},
+                {'factor': 'Transporte pub', 'condicion': 'c.transporte = 0'},
+                {'factor': 'Beca',           'condicion': 'c.beca = 1'},
+                {'factor': 'Sueño <6h',      'condicion': 'c.horas_sueno <= 1'},
+                {'factor': 'Tiene hijos',    'condicion': 'c.tiene_hijos = 1'},
+            ]
+
+            nodes = []
+            links = []
+
+            factor_names = [f['factor'] for f in factores_condiciones]
+            nivel_names = ['Bajo', 'Medio', 'Alto']
+
+            for name in factor_names:
+                nodes.append({'id': name, 'name': name})
+            for name in nivel_names:
+                nodes.append({'id': name, 'name': name})
+
+            factor_idx = {f: i for i, f in enumerate(factor_names)}
+            nivel_idx  = {n: len(factor_names) + i for i, n in enumerate(nivel_names)}
+
+            for item in factores_condiciones:
+                query = f"""
+                    SELECT
+                        CASE
+                            WHEN SUM(ap.valor) <= 4 THEN 'Bajo'
+                            WHEN SUM(ap.valor) <= 7 THEN 'Medio'
+                            ELSE 'Alto'
+                        END as nivel,
+                        COUNT(*) as cantidad
+                    FROM complemento c
+                    JOIN alumno_pregunta ap ON c.id_alumno = ap.id_alumno
+                    WHERE {item['condicion']}
+                    AND ap.id_pregunta IN (
+                        SELECT id FROM pregunta WHERE categoria = 'ansiedad' AND status = 1
+                    )
+                    GROUP BY nivel
+                """
+                cursor.execute(query)
+                resultados = cursor.fetchall()
+
+                for row in resultados:
+                    if row['cantidad'] > 0:
+                        links.append({
+                            'source': factor_idx[item['factor']],
+                            'target': nivel_idx[row['nivel']],
+                            'value':  int(row['cantidad'])
+                        })
+
+            return {'nodes': nodes, 'links': links}
+
+        finally:
+            cursor.close()
+            conn.close()
+
+
+    def get_gauge_data(self) -> Dict:
+        """Indicador global de riesgo institucional"""
+        conn = self.get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        try:
+            cursor.execute("""
+                SELECT
+                    CASE
+                        WHEN SUM(ap.valor) <= 4 THEN 'Bajo'
+                        WHEN SUM(ap.valor) <= 7 THEN 'Medio'
+                        ELSE 'Alto'
+                    END as nivel,
+                    COUNT(*) as cantidad
+                FROM alumno_pregunta ap
+                WHERE ap.id_pregunta IN (
+                    SELECT id FROM pregunta WHERE categoria = 'ansiedad' AND status = 1
+                )
+                GROUP BY ap.id_alumno
+            """)
+            resultados = cursor.fetchall()
+
+            distribucion = {'Bajo': 0, 'Medio': 0, 'Alto': 0}
+            total = 0
+            for row in resultados:
+                distribucion[row['nivel']] += row['cantidad']
+                total += row['cantidad']
+
+            porcentaje_alto = round((distribucion['Alto'] / total * 100), 1) if total > 0 else 0
+            porcentaje_medio = round((distribucion['Medio'] / total * 100), 1) if total > 0 else 0
+
+            if porcentaje_alto >= 30:
+                nivel_riesgo = 'Alto'
+                color = '#F44336'
+            elif porcentaje_alto >= 15:
+                nivel_riesgo = 'Moderado'
+                color = '#FF9800'
+            else:
+                nivel_riesgo = 'Bajo'
+                color = '#4CAF50'
+
+            return {
+                'porcentaje_alto': porcentaje_alto,
+                'porcentaje_medio': porcentaje_medio,
+                'porcentaje_bajo': round(100 - porcentaje_alto - porcentaje_medio, 1),
+                'total_alumnos': total,
+                'nivel_riesgo': nivel_riesgo,
+                'color': color,
+                'distribucion': distribucion
+            }
+
+        finally:
+            cursor.close()
+            conn.close()
 
 analytics = AnxiTechAnalytics()
