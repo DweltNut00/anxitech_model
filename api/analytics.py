@@ -922,7 +922,6 @@ class AnxiTechAnalytics:
             conn.close()
 
     def get_sankey_data(self) -> Dict:
-        """Flujo: Factor de riesgo → Nivel de ansiedad"""
         conn = self.get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
@@ -953,19 +952,23 @@ class AnxiTechAnalytics:
 
             for item in factores_condiciones:
                 query = f"""
-                    SELECT
-                        CASE
-                            WHEN SUM(ap.valor) <= 4 THEN 'Bajo'
-                            WHEN SUM(ap.valor) <= 7 THEN 'Medio'
-                            ELSE 'Alto'
-                        END as nivel,
-                        COUNT(*) as cantidad
-                    FROM complemento c
-                    JOIN alumno_pregunta ap ON c.id_alumno = ap.id_alumno
-                    WHERE {item['condicion']}
-                    AND ap.id_pregunta IN (
-                        SELECT id FROM pregunta WHERE categoria = 'ansiedad' AND status = 1
-                    )
+                    SELECT nivel, COUNT(*) as cantidad
+                    FROM (
+                        SELECT
+                            c.id_alumno,
+                            CASE
+                                WHEN SUM(ap.valor) <= 4 THEN 'Bajo'
+                                WHEN SUM(ap.valor) <= 7 THEN 'Medio'
+                                ELSE 'Alto'
+                            END as nivel
+                        FROM complemento c
+                        JOIN alumno_pregunta ap ON c.id_alumno = ap.id_alumno
+                        WHERE {item['condicion']}
+                        AND ap.id_pregunta IN (
+                            SELECT id FROM pregunta WHERE categoria = 'ansiedad' AND status = 1
+                        )
+                        GROUP BY c.id_alumno
+                    ) AS subquery
                     GROUP BY nivel
                 """
                 cursor.execute(query)
