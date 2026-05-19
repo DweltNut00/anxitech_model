@@ -189,12 +189,12 @@ class AnxiTechAnalytics:
                 {'factor': 'Promedio académico bajo (<70)',  'condicion': 'promedio_anterior < 70'},
                 {'factor': 'Carga excesiva de materias (7+)', 'condicion': 'materias >= 7'},
                 {'factor': 'Trabaja y estudia',              'condicion': 'trabajo = 1'},
-                {'factor': 'Transporte público',             'condicion': "transporte = 'Transporte publico'"},
+                {'factor': 'Transporte público', 'condicion': 'transporte = 0'},
                 {'factor': 'Presión por mantener beca',      'condicion': 'beca = 1'},
                 {'factor': 'Semestres iniciales (1-3)',       'condicion': 'semestre <= 3'},
                 {'factor': 'Edad joven (<21 años)',           'condicion': 'edad < 21'},
                 {'factor': 'Pocas horas de sueño (<6h)',      'condicion': 'horas_sueno < 6'},
-                {'factor': 'Ingreso mensual bajo (<3000)',    'condicion': 'ingreso_mensual < 3000'},
+{'factor': 'Ingreso mensual bajo (<3000)', 'condicion': 'ingreso_mensual <= 1'},
                 {'factor': 'Maestros estrictos',              'condicion': 'maestros_estrictos = 1'},
                 {'factor': 'Tiene hijos',                    'condicion': 'tiene_hijos = 1'},
             ]
@@ -751,9 +751,11 @@ class AnxiTechAnalytics:
 
             # ── 3. Preparar features ──
             feature_names = [
-                'promedio_anterior', 'semestre', 'materias', 'edad',
+                 'promedio_anterior', 'semestre', 'materias', 'edad',
                 'transporte', 'familiares', 'trabajo', 'beca',
-                'sexo', 'estado_civil', 'carrera'
+                'sexo', 'estado_civil', 'carrera',
+                'maestros_estrictos', 'tiene_hijos',
+                'ingreso_mensual', 'horas_sueno',
             ]
             available = [f for f in feature_names if f in df.columns]
 
@@ -829,12 +831,13 @@ class AnxiTechAnalytics:
             importancias = modelo_nuevo.feature_importances_
             dim_map = {
                 'promedio_anterior': 'Académica', 'semestre': 'Académica',
-                'materias': 'Académica', 'carrera': 'Académica',
-                'beca': 'Académica',
-                'trabajo': 'Socioeconómica', 'transporte': 'Socioeconómica',
-                'familiares': 'Socioeconómica',
-                'edad': 'Demográfica', 'sexo': 'Demográfica',
-                'estado_civil': 'Demográfica',
+    'materias': 'Académica', 'carrera': 'Académica',
+    'beca': 'Académica', 'maestros_estrictos': 'Académica',
+    'trabajo': 'Socioeconómica', 'transporte': 'Socioeconómica',
+    'familiares': 'Socioeconómica', 'ingreso_mensual': 'Socioeconómica',
+    'edad': 'Demográfica', 'sexo': 'Demográfica',
+    'estado_civil': 'Demográfica', 'tiene_hijos': 'Demográfica',
+    'horas_sueno': 'Demográfica',
             }
             fi = []
             for nombre, imp in zip(available, importancias):
