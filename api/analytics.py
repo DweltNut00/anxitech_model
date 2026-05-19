@@ -990,34 +990,37 @@ class AnxiTechAnalytics:
 
 
     def get_gauge_data(self) -> Dict:
-        """Indicador global de riesgo institucional"""
         conn = self.get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
         try:
             cursor.execute("""
-                SELECT
-                    CASE
-                        WHEN SUM(ap.valor) <= 4 THEN 'Bajo'
-                        WHEN SUM(ap.valor) <= 7 THEN 'Medio'
-                        ELSE 'Alto'
-                    END as nivel,
-                    COUNT(*) as cantidad
-                FROM alumno_pregunta ap
-                WHERE ap.id_pregunta IN (
-                    SELECT id FROM pregunta WHERE categoria = 'ansiedad' AND status = 1
-                )
-                GROUP BY ap.id_alumno
+                SELECT nivel, COUNT(*) as cantidad
+                FROM (
+                    SELECT
+                        id_alumno,
+                        CASE
+                            WHEN SUM(valor) <= 4 THEN 'Bajo'
+                            WHEN SUM(valor) <= 7 THEN 'Medio'
+                            ELSE 'Alto'
+                        END as nivel
+                    FROM alumno_pregunta
+                    WHERE id_pregunta IN (
+                        SELECT id FROM pregunta WHERE categoria = 'ansiedad' AND status = 1
+                    )
+                    GROUP BY id_alumno
+                ) AS subquery
+                GROUP BY nivel
             """)
             resultados = cursor.fetchall()
 
             distribucion = {'Bajo': 0, 'Medio': 0, 'Alto': 0}
             total = 0
             for row in resultados:
-                distribucion[row['nivel']] += row['cantidad']
+                distribucion[row['nivel']] = row['cantidad']
                 total += row['cantidad']
 
-            porcentaje_alto = round((distribucion['Alto'] / total * 100), 1) if total > 0 else 0
+            porcentaje_alto  = round((distribucion['Alto']  / total * 100), 1) if total > 0 else 0
             porcentaje_medio = round((distribucion['Medio'] / total * 100), 1) if total > 0 else 0
 
             if porcentaje_alto >= 30:
@@ -1031,13 +1034,13 @@ class AnxiTechAnalytics:
                 color = '#4CAF50'
 
             return {
-                'porcentaje_alto': porcentaje_alto,
+                'porcentaje_alto':  porcentaje_alto,
                 'porcentaje_medio': porcentaje_medio,
-                'porcentaje_bajo': round(100 - porcentaje_alto - porcentaje_medio, 1),
-                'total_alumnos': total,
-                'nivel_riesgo': nivel_riesgo,
-                'color': color,
-                'distribucion': distribucion
+                'porcentaje_bajo':  round(100 - porcentaje_alto - porcentaje_medio, 1),
+                'total_alumnos':    total,
+                'nivel_riesgo':     nivel_riesgo,
+                'color':            color,
+                'distribucion':     distribucion
             }
 
         finally:
