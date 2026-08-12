@@ -1049,5 +1049,62 @@ class AnxiTechAnalytics:
         finally:
             cursor.close()
             conn.close()
+    
+    def get_por_institucion(self) -> Dict:
+        conn = self.get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        try:
+            cursor.execute("""
+                SELECT 
+                    institucion,
+                    nivel_ansiedad,
+                    COUNT(*) as total,
+                    ROUND(AVG(promedio_avg), 1) as promedio_avg,
+                    ROUND(AVG(materias_avg), 1) as materias_avg,
+                    ROUND(AVG(sueno_avg), 1) as sueno_avg
+                FROM (
+                    SELECT 
+                        c.institucion,
+                        c.promedio_anterior as promedio_avg,
+                        c.materias as materias_avg,
+                        c.horas_sueno as sueno_avg,
+                        CASE
+                            WHEN SUM(ap.valor) <= 4 THEN 'Bajo'
+                            WHEN SUM(ap.valor) <= 7 THEN 'Medio'
+                            ELSE 'Alto'
+                        END as nivel_ansiedad
+                    FROM complemento c
+                    JOIN alumno_pregunta ap ON c.id_alumno = ap.id_alumno
+                    GROUP BY c.id_alumno, c.institucion, c.promedio_anterior,
+                            c.materias, c.horas_sueno
+                ) AS subquery
+                GROUP BY institucion, nivel_ansiedad
+                ORDER BY institucion, nivel_ansiedad
+            """)
+            resultados = cursor.fetchall()
+
+            # Organizar por institución
+            instituciones = {}
+            for row in resultados:
+                inst = row['institucion']
+                if inst not in instituciones:
+                    instituciones[inst] = {
+                        'total': 0,
+                        'niveles': {'Bajo': 0, 'Medio': 0, 'Alto': 0},
+                        'promedio_avg': 0,
+                        'materias_avg': 0,
+                        'sueno_avg': 0,
+                    }
+                instituciones[inst]['niveles'][row['nivel_ansiedad']] = row['total']
+                instituciones[inst]['total'] += row['total']
+                instituciones[inst]['promedio_avg'] = row['promedio_avg']
+                instituciones[inst]['materias_avg'] = row['materias_avg']
+                instituciones[inst]['sueno_avg'] = row['sueno_avg']
+
+            return {'instituciones': instituciones}
+
+        finally:
+            cursor.close()
+            conn.close()
 
 analytics = AnxiTechAnalytics()

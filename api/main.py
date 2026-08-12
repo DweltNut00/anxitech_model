@@ -394,3 +394,11 @@ if __name__ == "__main__":
         proxy_headers=True,
         forwarded_allow_ips="*",
     )
+
+@app.get("/api/stats/por-institucion", tags=["Dashboard"])
+async def por_institucion():
+    """Comparativa de niveles de ansiedad por institución."""
+    try:
+        return analytics.get_por_institucion()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {e}") from e
