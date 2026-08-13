@@ -1150,4 +1150,45 @@ class AnxiTechAnalytics:
             cursor.close()
             conn.close()
 
+    def get_detalle_alumno(self, id_alumno: int) -> Dict:
+        conn = self.get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        try:
+            # Info general + factores
+            cursor.execute("""
+                SELECT u.nombre, u.apellido, c.carrera, c.institucion,
+                    c.semestre, c.promedio_anterior, c.materias,
+                    c.trabajo, c.beca, c.transporte, c.horas_sueno,
+                    c.maestros_estrictos, c.ingreso_mensual, c.tiene_hijos,
+                    c.familiares
+                FROM usuario u
+                JOIN complemento c ON u.id = c.id_alumno
+                WHERE u.id = %s
+            """, (id_alumno,))
+            info = cursor.fetchone()
+
+            # Respuestas DASS-21 por pregunta
+            cursor.execute("""
+                SELECT p.id, p.pregunta, ap.valor
+                FROM alumno_pregunta ap
+                JOIN pregunta p ON ap.id_pregunta = p.id
+                WHERE ap.id_alumno = %s
+                AND p.categoria = 'ansiedad' AND p.status = 1
+                ORDER BY p.id
+            """, (id_alumno,))
+            respuestas = cursor.fetchall()
+
+            total = sum(r['valor'] for r in respuestas)
+            nivel = 'Bajo' if total <= 4 else 'Medio' if total <= 7 else 'Alto'
+
+            return {
+                'info': info,
+                'respuestas': respuestas,
+                'puntaje_total': total,
+                'nivel_ansiedad': nivel
+            }
+        finally:
+            cursor.close()
+            conn.close()
+
 analytics = AnxiTechAnalytics()
