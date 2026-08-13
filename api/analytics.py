@@ -1106,5 +1106,48 @@ class AnxiTechAnalytics:
         finally:
             cursor.close()
             conn.close()
+    
+    def get_por_alumno(self) -> Dict:
+        conn = self.get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        try:
+            cursor.execute("""
+                SELECT 
+                    u.id,
+                    u.nombre,
+                    u.apellido,
+                    c.institucion,
+                    c.carrera,
+                    c.semestre,
+                    c.promedio_anterior,
+                    c.materias,
+                    c.trabajo,
+                    c.beca,
+                    c.transporte,
+                    c.horas_sueno,
+                    c.maestros_estrictos,
+                    c.ingreso_mensual,
+                    c.tiene_hijos,
+                    c.familiares,
+                    SUM(ap.valor) as puntaje_dass21,
+                    CASE
+                        WHEN SUM(ap.valor) <= 4 THEN 'Bajo'
+                        WHEN SUM(ap.valor) <= 7 THEN 'Medio'
+                        ELSE 'Alto'
+                    END as nivel_ansiedad
+                FROM usuario u
+                JOIN complemento c ON u.id = c.id_alumno
+                JOIN alumno_pregunta ap ON u.id = ap.id_alumno
+                GROUP BY u.id, u.nombre, u.apellido, c.institucion,
+                        c.carrera, c.semestre, c.promedio_anterior,
+                        c.materias, c.trabajo, c.beca, c.transporte,
+                        c.horas_sueno, c.maestros_estrictos,
+                        c.ingreso_mensual, c.tiene_hijos, c.familiares
+                ORDER BY nivel_ansiedad DESC, u.apellido
+            """)
+            return {'alumnos': cursor.fetchall(), 'total': cursor.rowcount}
+        finally:
+            cursor.close()
+            conn.close()
 
 analytics = AnxiTechAnalytics()

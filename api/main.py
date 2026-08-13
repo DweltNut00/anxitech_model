@@ -402,3 +402,10 @@ async def por_institucion():
         return analytics.get_por_institucion()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {e}") from e
+
+@app.get("/api/stats/por-alumno", tags=["Dashboard"])
+async def por_alumno():
+    try:
+        return analytics.get_por_alumno()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {e}") from e
